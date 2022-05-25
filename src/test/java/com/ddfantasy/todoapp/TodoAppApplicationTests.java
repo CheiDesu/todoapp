@@ -31,7 +31,7 @@ class TodoAppApplicationTests {
         config.setActiveRecord(true)//开启AR模式
                 .setAuthor("chei")//设置作者
                 //生成路径(一般都是生成在此项目的src/main/java下面)
-                .setOutputDir("D:\\project-data\\Course Design\\todo-app\\src\\main\\java")
+                .setOutputDir("D:\\project-data\\course-design\\todo-app\\src\\main\\java")
                 .setFileOverride(true)//第二次生成会把第一次生成的覆盖掉
                 .setIdType(IdType.AUTO)//主键策略
                 .setServiceName("%sService")//生成的service接口名字首字母是否为I，这样设置就没有I
@@ -50,15 +50,15 @@ class TodoAppApplicationTests {
                 .setNaming(NamingStrategy.underline_to_camel)//下划线到驼峰的命名方式
 //                .setTablePrefix("tb_")//表名前缀
                 .setEntityLombokModel(true)//使用lombok
-                .setInclude("events","normal_todo","user","workspace");//逆向工程使用的表
+                .setInclude("workspace_user","events_todo");//逆向工程使用的表
         //4、包名策略配置
         PackageConfig packageConfig = new PackageConfig();
         packageConfig.setParent("com.ddfantasy.todoapp")//设置包名的parent
                 .setMapper("mapper")
-                .setService("service")
-                .setController("controller")
-                .setEntity("entity")
-                .setXml("mapper");//设置xml文件的目录
+                .setService("service");
+//                .setController("controller")
+//                .setEntity("entity")
+//                .setXml("mapper");//设置xml文件的目录
         //5、整合配置
         AutoGenerator autoGenerator = new AutoGenerator();
         autoGenerator.setGlobalConfig(config)

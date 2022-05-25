@@ -20,16 +20,16 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class Workspace extends Model<Workspace> {
+public class EventsTodo extends Model<EventsTodo> {
 
     private static final long serialVersionUID = 1L;
 
       @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    private String name;
+    private Integer eventsId;
 
-    private Integer ownerId;
+    private Integer normalTodoId;
 
     /*创建时间自动填充*/
     @TableField(fill = FieldFill.INSERT)

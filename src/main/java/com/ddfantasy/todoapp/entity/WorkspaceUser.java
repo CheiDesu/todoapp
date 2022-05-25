@@ -20,16 +20,16 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class Workspace extends Model<Workspace> {
+public class WorkspaceUser extends Model<WorkspaceUser> {
 
     private static final long serialVersionUID = 1L;
 
       @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    private String name;
+    private Integer workspaceId;
 
-    private Integer ownerId;
+    private Integer userId;
 
     /*创建时间自动填充*/
     @TableField(fill = FieldFill.INSERT)
@@ -38,6 +38,7 @@ public class Workspace extends Model<Workspace> {
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
+
 
     @Override
     protected Serializable pkVal() {

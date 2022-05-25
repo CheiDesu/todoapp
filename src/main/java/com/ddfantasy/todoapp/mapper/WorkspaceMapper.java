@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
  * </p>
  *
  * @author chei
- * @since 2022-05-24
+ * @since 2022-05-25
  */
 @Mapper
 public interface WorkspaceMapper extends BaseMapper<Workspace> {

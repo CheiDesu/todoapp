@@ -1,9 +1,13 @@
 package com.ddfantasy.todoapp.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -26,7 +30,13 @@ public class Events extends Model<Events> {
 
     private String title;
 
-    private Integer normalTodoId;
+    /*创建时间自动填充*/
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
+
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
 
 
     @Override

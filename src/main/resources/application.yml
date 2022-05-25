@@ -20,20 +20,20 @@ spring:
 
   devtools:
     restart:
-      # ÉèÖÃ²»²ÎÓëÈÈ²¿ÊðµÄÎÄ¼þ»òÎÄ¼þ¼Ð,²¢Æô¶¯ÈÈ²¿Êð
+      # ï¿½ï¿½ï¿½Ã²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È²ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È²ï¿½ï¿½ï¿½
       #      exclude: static/**,public/**,config/application.yml
       enabled: true
 
 
 mybatis-plus:
   configuration:
-    #ÔÚÓ³ÉäÊµÌå»òÕßÊôÐÔÊ±£¬½«Êý¾Ý¿âÖÐ±íÃûºÍ×Ö¶ÎÃûÖÐµÄÏÂ»®ÏßÈ¥µô£¬°´ÕÕÍÕ·åÃüÃû·¨Ó³Éä
+    #ï¿½ï¿½Ó³ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½Â»ï¿½ï¿½ï¿½È¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³ï¿½ï¿½
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
-#      Ñ©»¨Ëã·¨
+#      Ñ©ï¿½ï¿½ï¿½ã·¨
 #      id-type: ASSIGN_ID
-#      Ö÷¼ü×ÔÔö
+#      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
       id-type: AUTO
 

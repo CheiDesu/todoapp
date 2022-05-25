@@ -1,6 +1,6 @@
 package com.ddfantasy.todoapp.mapper;
 
-import com.ddfantasy.todoapp.entity.User;
+import com.ddfantasy.todoapp.entity.WorkspaceUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -13,6 +13,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @since 2022-05-25
  */
 @Mapper
-public interface UserMapper extends BaseMapper<User> {
+public interface WorkspaceUserMapper extends BaseMapper<WorkspaceUser> {
 
 }

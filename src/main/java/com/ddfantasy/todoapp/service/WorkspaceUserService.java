@@ -1,6 +1,6 @@
 package com.ddfantasy.todoapp.service;
 
-import com.ddfantasy.todoapp.entity.Workspace;
+import com.ddfantasy.todoapp.entity.WorkspaceUser;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author chei
  * @since 2022-05-25
  */
-public interface WorkspaceService extends IService<Workspace> {
+public interface WorkspaceUserService extends IService<WorkspaceUser> {
 
 }
