@@ -6,20 +6,19 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ddfantasy.todoapp.common.ResultData;
 import com.ddfantasy.todoapp.dto.EventsDto;
 import com.ddfantasy.todoapp.entity.Events;
+import com.ddfantasy.todoapp.entity.EventsTodo;
 import com.ddfantasy.todoapp.entity.NormalTodo;
 import com.ddfantasy.todoapp.service.EventsService;
+import com.ddfantasy.todoapp.service.EventsTodoService;
 import com.ddfantasy.todoapp.service.NormalTodoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StreamUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
 import sun.security.x509.RDN;
 
 import java.util.Arrays;
@@ -44,6 +43,9 @@ public class EventsController {
 
     @Autowired
     private NormalTodoService todoService;
+
+    @Autowired
+    private EventsTodoService eventsTodoService;
 
     /*
     * 按照创建时间排序
@@ -72,10 +74,101 @@ public class EventsController {
 
     }
 
+    /*
+    * 根据id获取单个事件和对应todo,返回一个包含事件和对应todo列表的dto对象
+    * */
     @GetMapping("/{id}")
     public ResultData getById(@PathVariable Integer id){
+
+//        todo:封装成service方法：getByIdWtihTodo(Integer id)
+//        EventsDto eventsDto=eventsService.getByIdWtihTodo(id);
+
         Events events = eventsService.getById(id);
-        return ResultData.success(events);
+        EventsDto eventsDto = new EventsDto();
+        if(events==null)return ResultData.error("获取失败");
+
+        BeanUtils.copyProperties(events,eventsDto);
+//        对dto里面的todolist赋值
+//        要查询关系表：events_todo
+        LambdaQueryWrapper<EventsTodo> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(EventsTodo::getEventsId,events.getId());
+        List<EventsTodo> todolist = eventsTodoService.list(wrapper);
+
+        //该event妹有todo
+        if(todolist.size()==0)return ResultData.success(eventsDto);
+
+        LinkedList<Integer> ids = new LinkedList<>();
+
+//        获取todo的id列表
+        todolist.forEach(item->{
+            ids.add(item.getNormalTodoId());
+        });
+
+//        转化为normal_todo 的list
+        List<NormalTodo> todoList = todoService.listByIds(ids);
+        eventsDto.setNormalTodoList(todoList);
+
+        return ResultData.success(eventsDto);
+    }
+
+
+    /*
+    * 更改events里面的todo的状态
+    * 流程：
+    * 通过id获取eventsDto,然后修改
+    * */
+    @PutMapping
+    public ResultData update(@RequestBody EventsDto eventsDto){
+
+        eventsService.updateById(eventsDto);
+
+        List<NormalTodo> normalTodoList = eventsDto.getNormalTodoList();
+        todoService.updateBatchById(normalTodoList);
+
+        return ResultData.success("修改成功");
+    }
+
+
+    /*
+    * 添加event
+    * 传入dto，以操作两个基本表和和关系表
+    * */
+    @PostMapping
+    public ResultData addEvent(@RequestBody EventsDto eventsDto){
+
+        //先保存event
+        eventsService.save(eventsDto);
+        List<NormalTodo> normalTodoList = eventsDto.getNormalTodoList();
+
+        //若底下的todoList为空，则直接返回
+        if(normalTodoList!=null) {
+            todoService.saveWithEvents(eventsDto);
+        }
+
+        return ResultData.success("添加成功");
+    }
+
+    /*
+    * 要点进去某个events才能编辑/addtodo
+    * 可以添加，events里面的todo
+    * */
+    @PostMapping("/addTodo")
+    public ResultData addTodo(@RequestBody EventsDto eventsDto){
+        //封装成service，或者直接调用todoService的方法
+        todoService.saveWithEvents(eventsDto);
+
+        return ResultData.success("添加成功");
+    }
+
+
+    /*
+     * 要点进去某个events才能编辑/addtodo
+     * 可以删除，events里面的todo
+     * */
+    @DeleteMapping("/deleteTodo")
+    public ResultData deleteTodo(@RequestBody List<Integer> ids){
+        boolean b = todoService.removeByIdsWithEvents(ids);
+        return b?ResultData.success("删除成功"):ResultData.error("删除失败");
     }
 
 }

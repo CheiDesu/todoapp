@@ -32,7 +32,7 @@ public class NormalTodoController {
     private NormalTodoService todoService;
 
     /*
-    *
+    * 列出所有todo---根据时间排序（默认）
     * */
     @GetMapping("/list")
     public ResultData getList(String title){
@@ -45,11 +45,24 @@ public class NormalTodoController {
     }
 
     /*
+     * 列出所有todo---根据重要程度排序
+     * */
+    @GetMapping("/list/important")
+    public ResultData getListOrderByImp(String title){
+        LambdaQueryWrapper<NormalTodo> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(StringUtils.isNotEmpty(title), NormalTodo::getTitle,title);
+//        根据创建时间排序
+        wrapper.orderByDesc(NormalTodo::getImportant);
+        List<NormalTodo> list = todoService.list(wrapper);
+        return ResultData.success(list);
+    }
+
+
+    /*
     * 添加
     * */
     @PostMapping
     public ResultData save(@RequestBody NormalTodo todo){
-        todo.setCreateTime(LocalDateTime.now());
         todoService.save(todo);
         return ResultData.success("添加成功");
     }
@@ -65,12 +78,24 @@ public class NormalTodoController {
 
 
     /*
-    * 通过id修改todo
+    * 通过id修改todo，前端可以用来标记事件完成
     * */
     @PutMapping
     public ResultData update(@RequestBody NormalTodo todo){
         todoService.updateById(todo);
-        return ResultData.success("添加成功");
+        return ResultData.success("修改成功");
+    }
+
+    /*
+    * （批量）删除todo
+    *   处理关系表,关系表里的todo也要删除？
+    * */
+    @DeleteMapping("/delete")
+    public ResultData delete(@RequestBody List<Integer> ids){
+
+        boolean b = todoService.removeByIdsWithEvents(ids);
+        return b?ResultData.success("删除成功"):ResultData.error("删除失败");
+
     }
 
 }

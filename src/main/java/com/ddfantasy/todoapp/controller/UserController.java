@@ -79,6 +79,7 @@ public class UserController {
 
     /*
     * 删除用户（单个或批量）
+    * 要处理关系表？
     * */
     @DeleteMapping
     public ResultData remove(List<Long> ids){

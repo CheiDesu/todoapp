@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50732
 File Encoding         : 65001
 
-Date: 2022-05-25 16:06:24
+Date: 2022-05-26 21:11:42
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -112,13 +112,14 @@ CREATE TABLE `workspace` (
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_german2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_german2_ci;
 
 -- ----------------------------
 -- Records of workspace
 -- ----------------------------
 INSERT INTO `workspace` VALUES ('1', 'test_workspace', '1', '2022-05-25 11:07:18', '2022-05-25 11:07:21');
 INSERT INTO `workspace` VALUES ('2', 'test_workspace_2', '1', '2022-05-25 11:07:25', '2022-05-25 11:07:28');
+INSERT INTO `workspace` VALUES ('3', '你好世界123', '3', null, '2022-05-26 10:40:10');
 
 -- ----------------------------
 -- Table structure for workspace_user
@@ -131,7 +132,7 @@ CREATE TABLE `workspace_user` (
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_german2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_german2_ci;
 
 -- ----------------------------
 -- Records of workspace_user
@@ -139,3 +140,6 @@ CREATE TABLE `workspace_user` (
 INSERT INTO `workspace_user` VALUES ('1', '1', '1', null, null);
 INSERT INTO `workspace_user` VALUES ('2', '1', '2', null, null);
 INSERT INTO `workspace_user` VALUES ('3', '1', '3', null, null);
+INSERT INTO `workspace_user` VALUES ('4', '2', '1', null, null);
+INSERT INTO `workspace_user` VALUES ('7', '3', '2', '2022-05-26 10:40:10', '2022-05-26 10:40:10');
+INSERT INTO `workspace_user` VALUES ('8', '3', '3', '2022-05-26 10:40:10', '2022-05-26 10:40:10');
