@@ -17,23 +17,22 @@ spring:
 
   main:
     allow-bean-definition-overriding: true
+    #bean循环依赖的问题需要解决...
+    allow-circular-references: true
 
   devtools:
     restart:
-      # ���ò������Ȳ�����ļ����ļ���,�������Ȳ���
+      # 热部署
       #      exclude: static/**,public/**,config/application.yml
       enabled: true
 
 
 mybatis-plus:
   configuration:
-    #��ӳ��ʵ���������ʱ�������ݿ��б������ֶ����е��»���ȥ���������շ�������ӳ��
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
-#      ѩ���㷨
 #      id-type: ASSIGN_ID
-#      ��������
       id-type: AUTO
 

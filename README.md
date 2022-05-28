@@ -48,6 +48,7 @@
     1. 用sql语句代替接口调用，减少冗余代码
     2. controller多次调用的代码块封装到service
     3. 用户密码加密认证（md5等）
+    4. 存在bean相互循环依赖的问题。。。
 
 1. 接口文档：
     http://localhost:8080/doc.html#/home
