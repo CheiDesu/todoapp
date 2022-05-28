@@ -10,6 +10,7 @@ import com.ddfantasy.todoapp.service.NormalTodoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -32,6 +33,7 @@ public class NormalTodoServiceImpl extends ServiceImpl<NormalTodoMapper, NormalT
      * 通过ids（批量）删除todo，以及处理对应的关系表
      * */
     @Override
+    @Transactional
     public boolean removeByIdsWithEvents(List<Integer> ids) {
         boolean b = this.removeByIds(ids);
 
@@ -47,6 +49,7 @@ public class NormalTodoServiceImpl extends ServiceImpl<NormalTodoMapper, NormalT
      * 将todo添加到事件，处理关系表的方法;
      * */
     @Override
+    @Transactional
     public void saveWithEvents(EventsDto eventsDto) {
         List<NormalTodo> normalTodoList = eventsDto.getNormalTodoList();
         this.saveBatch(normalTodoList);

@@ -78,17 +78,6 @@ public class UserController {
 
 
     /*
-    * 删除用户（单个或批量）
-    * 要处理关系表？
-    * */
-    @DeleteMapping
-    public ResultData remove(List<Long> ids){
-        boolean flag = userService.removeByIds(ids);
-        return flag?ResultData.success("删除成功"):ResultData.error("删除失败");
-    }
-
-
-    /*
      * 更新用户
      * */
     @PutMapping
@@ -143,6 +132,16 @@ public class UserController {
     public ResultData<String> logout(HttpServletRequest request){
         request.getSession().removeAttribute("user");
         return ResultData.success("退出成功");
+    }
+
+
+    /*
+    * 删除用户以及处理工作区上的对应用户（如果有）
+    * */
+    @DeleteMapping
+    public ResultData deleteUser(@RequestBody List<Integer> ids){
+        boolean flag=userService.deleteWithWorkspaceUser(ids);
+        return flag?ResultData.success("删除成功"): ResultData.error("删除失败");
     }
 }
 

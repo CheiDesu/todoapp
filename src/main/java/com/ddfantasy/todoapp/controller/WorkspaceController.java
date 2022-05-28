@@ -58,7 +58,7 @@ public class WorkspaceController {
     }
 
     /*
-    * 获取工作区和对应用户,返回一个dto
+    * 获取工作区和对应用户,返回一个dto返回一个dto
     * */
     @GetMapping("/{id}")
     public ResultData<WorkspaceDto> getOne(@PathVariable Integer id){

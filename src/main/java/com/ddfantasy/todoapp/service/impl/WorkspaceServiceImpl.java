@@ -110,7 +110,7 @@ public class WorkspaceServiceImpl extends ServiceImpl<WorkspaceMapper, Workspace
 
 //        删除工作区,先要删除该工作区关系表上的行
         LambdaQueryWrapper<WorkspaceUser> workspaceUserLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        workspaceUserLambdaQueryWrapper.eq(WorkspaceUser::getWorkspaceId,ids);
+        workspaceUserLambdaQueryWrapper.in(WorkspaceUser::getWorkspaceId,ids);
         workspaceUserService.remove(workspaceUserLambdaQueryWrapper);
 
 //        删除工作区
