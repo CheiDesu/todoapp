@@ -36,4 +36,11 @@ public interface WorkspaceService extends IService<Workspace> {
     * 根据id获取工作区以及对应的成员
     * */
     WorkspaceDto getOneWithUser(Integer id);
+
+
+    /*
+    * 获取工作区里面的用户
+    * 不删除工作区
+    * */
+    boolean deleteUserInWorkspace(List<Integer> ids);
 }

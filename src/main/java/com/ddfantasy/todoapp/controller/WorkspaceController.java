@@ -49,7 +49,7 @@ public class WorkspaceController {
     private UserService userService;
 
     /*
-     * 获取工作区和对应用户
+     * 获取工作区和对应用户列表
      * */
     @GetMapping("/list")
     public ResultData list(){
@@ -58,7 +58,7 @@ public class WorkspaceController {
     }
 
     /*
-    * 获取工作区和对应用户,返回一个dto返回一个dto
+    * 根据id获取工作区和对应用户,返回一个dto返回一个dto
     * */
     @GetMapping("/{id}")
     public ResultData<WorkspaceDto> getOne(@PathVariable Integer id){
@@ -93,13 +93,31 @@ public class WorkspaceController {
     }
 
     /*
-     * 获取工作区和对应用户
+    * 添加工作区里面的用户
+    * */
+//    @PostMapping("/addUser")
+
+
+    /*
+     * 删除工作区和对应用户
      * ids是工作区的ids
      * */
     @DeleteMapping
     public ResultData delete(@RequestBody List<Integer> ids){
 //        前端要提醒用户
         boolean flag=workspaceService.deleteWithUser(ids);
+        return flag?ResultData.success("删除成功"):ResultData.error("删除失败");
+    }
+
+    /*
+     * 删除工作区里面的对应用户，不删除工作区
+     * 不删除用户本身的user表，只是处理关系表
+     * ids是用户的ids
+     * */
+    @DeleteMapping("/deleteUser")
+    public ResultData deleteUser(@RequestBody List<Integer> ids){
+//        前端要提醒用户
+        boolean flag=workspaceService.deleteUserInWorkspace(ids);
         return flag?ResultData.success("删除成功"):ResultData.error("删除失败");
     }
 }

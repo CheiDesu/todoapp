@@ -119,6 +119,22 @@ public class WorkspaceServiceImpl extends ServiceImpl<WorkspaceMapper, Workspace
         return isRemoved;
     }
 
+
+    /*
+     * 获取工作区里面的用户
+     * 不删除工作区
+     * 传入的是用户ids列表
+     * */
+    @Override
+    @Transactional
+    public boolean deleteUserInWorkspace(List<Integer> ids) {
+        LambdaQueryWrapper<WorkspaceUser> workspaceUserLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        workspaceUserLambdaQueryWrapper.in(WorkspaceUser::getUserId,ids);
+        boolean remove = workspaceUserService.remove(workspaceUserLambdaQueryWrapper);
+
+        return remove;
+    }
+
     /*
      * 更新工作区以及对应的成员
      * 开启事务注解
@@ -186,4 +202,7 @@ public class WorkspaceServiceImpl extends ServiceImpl<WorkspaceMapper, Workspace
 
         return workspaceDto;
     }
+
+
+
 }

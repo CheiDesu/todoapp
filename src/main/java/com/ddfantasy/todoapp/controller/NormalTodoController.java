@@ -2,6 +2,7 @@ package com.ddfantasy.todoapp.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.ddfantasy.todoapp.common.BaseContext;
 import com.ddfantasy.todoapp.common.ResultData;
 import com.ddfantasy.todoapp.entity.NormalTodo;
 import com.ddfantasy.todoapp.entity.User;
@@ -37,6 +38,12 @@ public class NormalTodoController {
     @GetMapping("/list")
     public ResultData getList(String title){
         LambdaQueryWrapper<NormalTodo> wrapper = new LambdaQueryWrapper<>();
+
+//        获取当前登录用户id
+        Integer currentId = BaseContext.getCurrentId();
+        wrapper.eq(NormalTodo::getUserId,currentId);
+
+//        可以进行模糊查询
         wrapper.like(StringUtils.isNotEmpty(title), NormalTodo::getTitle,title);
 //        根据创建时间排序
         wrapper.orderByAsc(NormalTodo::getCreateTime);

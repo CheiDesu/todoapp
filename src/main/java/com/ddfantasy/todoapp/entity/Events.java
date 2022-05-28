@@ -30,6 +30,8 @@ public class Events extends Model<Events> {
 
     private String title;
 
+    private Integer userId;
+
     /*创建时间自动填充*/
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

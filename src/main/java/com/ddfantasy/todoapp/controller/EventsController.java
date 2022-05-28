@@ -3,6 +3,7 @@ package com.ddfantasy.todoapp.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ddfantasy.todoapp.common.BaseContext;
 import com.ddfantasy.todoapp.common.ResultData;
 import com.ddfantasy.todoapp.dto.EventsDto;
 import com.ddfantasy.todoapp.entity.Events;
@@ -53,6 +54,12 @@ public class EventsController {
     @GetMapping("/list")
     public ResultData list(String title){
         LambdaQueryWrapper<Events> wrapper = new LambdaQueryWrapper<>();
+
+        //        获取当前登录用户id
+        Integer currentId = BaseContext.getCurrentId();
+        wrapper.eq(Events::getUserId,currentId);
+
+//        对大todo的模糊查询
         wrapper.like(StringUtils.isNotEmpty(title), Events::getTitle,title);
 //        根据创建时间排序
         wrapper.orderByAsc(Events::getCreateTime);
@@ -162,14 +169,41 @@ public class EventsController {
 
 
     /*
-     * 要点进去某个events才能编辑/addtodo
+     * 要点进去某个events
      * 可以删除，events里面的todo
+     * 不会删除event
      * */
     @DeleteMapping("/deleteTodo")
     public ResultData deleteTodo(@RequestBody List<Integer> ids){
         boolean b = todoService.removeByIdsWithEvents(ids);
         return b?ResultData.success("删除成功"):ResultData.error("删除失败");
     }
+
+    /*
+    * 删除整个event以及对应todo
+    * */
+    @DeleteMapping()
+    public ResultData deleteEvent(@RequestBody List<Integer> ids){
+        boolean isRemove = eventsService.removeByIds(ids);
+
+        //查询todo的ids
+        LambdaQueryWrapper<EventsTodo> eventsTodoLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        eventsTodoLambdaQueryWrapper.in(EventsTodo::getEventsId,ids);
+        //获取todo
+        List<EventsTodo> eventsTodos = eventsTodoService.list(eventsTodoLambdaQueryWrapper);
+        LinkedList<Integer> todoids = new LinkedList<>();
+
+        eventsTodos.forEach(item->{
+            todoids.add(item.getNormalTodoId());
+        });
+
+        eventsTodoService.remove(eventsTodoLambdaQueryWrapper);
+        todoService.removeByIds(todoids);
+
+        return isRemove?ResultData.success("删除成功"):ResultData.error("删除失败");
+    }
+
+
 
 }
 

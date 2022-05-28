@@ -45,6 +45,7 @@ public class NormalTodo extends Model<NormalTodo> {
 
     private Boolean finished;
 
+    private Integer userId;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
