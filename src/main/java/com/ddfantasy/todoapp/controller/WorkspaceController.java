@@ -58,10 +58,19 @@ public class WorkspaceController {
     }
 
     /*
+    * 列出工作区下的events以及todos
+    * */
+    @GetMapping("/list/events")
+    public ResultData listEvents(){
+        return  workspaceService.listWithEvents();
+
+    }
+
+    /*
     * 根据id获取工作区和对应用户,返回一个dto返回一个dto
     * */
     @GetMapping("/{id}")
-    public ResultData<WorkspaceDto> getOne(@PathVariable Integer id){
+    public ResultData<WorkspaceDto> getById(@PathVariable Integer id){
         WorkspaceDto workspaceDto = workspaceService.getOneWithUser(id);
         if(workspaceDto!=null)
             return ResultData.success(workspaceDto);
@@ -87,15 +96,30 @@ public class WorkspaceController {
     * 添加工作区
     * */
     @PostMapping
-    public ResultData save(@RequestBody Workspace workspace){
+    public ResultData addWorkspace(@RequestBody Workspace workspace){
         workspaceService.save(workspace);
         return ResultData.success("添加成功");
     }
 
     /*
-    * 添加工作区里面的用户
+    * 进入工作区才添加
+    * 添加工作区里面的用户id
     * */
-//    @PostMapping("/addUser")
+    @PostMapping("/{id}/addUser")
+    public ResultData addUser(@PathVariable Integer id, @RequestBody List<Integer> userIds){
+
+        LinkedList<WorkspaceUser> workspaceUserList = new LinkedList<>();
+        userIds.forEach(userId->{
+            WorkspaceUser workspaceUser = new WorkspaceUser();
+            workspaceUser.setUserId(userId);
+            workspaceUser.setWorkspaceId(id);
+            workspaceUserList.add(workspaceUser);
+        });
+
+        workspaceUserService.saveBatch(workspaceUserList);
+
+        return ResultData.success("添加成功");
+    }
 
 
     /*

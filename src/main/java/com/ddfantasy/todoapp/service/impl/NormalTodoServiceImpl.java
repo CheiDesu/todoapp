@@ -8,6 +8,7 @@ import com.ddfantasy.todoapp.mapper.NormalTodoMapper;
 import com.ddfantasy.todoapp.service.EventsTodoService;
 import com.ddfantasy.todoapp.service.NormalTodoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import java.util.List;
  * @since 2022-05-24
  */
 @Service
+@Slf4j
 public class NormalTodoServiceImpl extends ServiceImpl<NormalTodoMapper, NormalTodo> implements NormalTodoService {
 
     @Autowired
@@ -65,5 +67,38 @@ public class NormalTodoServiceImpl extends ServiceImpl<NormalTodoMapper, NormalT
 
         //处理关系表的添加
         eventsTodoService.saveBatch(eventsTodoList);
+    }
+
+    /*
+     * 根据event_id获取todo列表
+     * */
+    @Override
+    public List<NormalTodo> getTodoByEventId(Integer id) {
+
+        LambdaQueryWrapper<EventsTodo> eventsTodoLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        eventsTodoLambdaQueryWrapper.eq(EventsTodo::getEventsId,id);
+        List<EventsTodo> eventsTodoList = eventsTodoService.list(eventsTodoLambdaQueryWrapper);
+
+        log.info("{}",eventsTodoList);
+
+        List<Integer> todoids=new LinkedList<>();
+        List<NormalTodo> todos=null;
+
+        //没有todo，直接返回
+        if (eventsTodoList.size()==0){
+            return todos;
+        }
+
+        //从关系表获取todo的ids
+        eventsTodoList.forEach(item->{
+            todoids.add(item.getNormalTodoId());
+        });
+
+        LambdaQueryWrapper<NormalTodo> normalTodoLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        normalTodoLambdaQueryWrapper.in(!todoids.isEmpty(),NormalTodo::getId,todoids);
+        todos = this.list(normalTodoLambdaQueryWrapper);
+
+
+        return todos;
     }
 }

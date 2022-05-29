@@ -32,6 +32,11 @@ public class Events extends Model<Events> {
 
     private Integer userId;
 
+    /*
+    * 为0或者null时候，不属于哪个工作区
+    * */
+    private Integer workspaceId;
+
     /*创建时间自动填充*/
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

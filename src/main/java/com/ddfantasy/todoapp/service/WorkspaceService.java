@@ -23,7 +23,12 @@ public interface WorkspaceService extends IService<Workspace> {
     ResultData listWithUser();
 
     /*
-    * 获取工作区和对应用户
+     * 获取工作区的todo
+     * */
+    ResultData listWithEvents();
+
+    /*
+    * 删除工作区和对应用户
     * */
     boolean deleteWithUser(List<Integer> ids);
 

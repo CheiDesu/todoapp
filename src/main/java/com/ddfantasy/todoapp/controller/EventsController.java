@@ -53,6 +53,8 @@ public class EventsController {
     * */
     @GetMapping("/list")
     public ResultData list(String title){
+
+
         LambdaQueryWrapper<Events> wrapper = new LambdaQueryWrapper<>();
 
         //        获取当前登录用户id
@@ -81,38 +83,21 @@ public class EventsController {
 
     }
 
+
     /*
     * 根据id获取单个事件和对应todo,返回一个包含事件和对应todo列表的dto对象
     * */
     @GetMapping("/{id}")
-    public ResultData getById(@PathVariable Integer id){
-
-//        todo:封装成service方法：getByIdWtihTodo(Integer id)
-//        EventsDto eventsDto=eventsService.getByIdWtihTodo(id);
+    public ResultData getEventWithTodoById(@PathVariable Integer id){
 
         Events events = eventsService.getById(id);
         EventsDto eventsDto = new EventsDto();
         if(events==null)return ResultData.error("获取失败");
 
         BeanUtils.copyProperties(events,eventsDto);
-//        对dto里面的todolist赋值
-//        要查询关系表：events_todo
-        LambdaQueryWrapper<EventsTodo> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(EventsTodo::getEventsId,events.getId());
-        List<EventsTodo> todolist = eventsTodoService.list(wrapper);
 
-        //该event妹有todo
-        if(todolist.size()==0)return ResultData.success(eventsDto);
+        List<NormalTodo> todoList = todoService.getTodoByEventId(id);
 
-        LinkedList<Integer> ids = new LinkedList<>();
-
-//        获取todo的id列表
-        todolist.forEach(item->{
-            ids.add(item.getNormalTodoId());
-        });
-
-//        转化为normal_todo 的list
-        List<NormalTodo> todoList = todoService.listByIds(ids);
         eventsDto.setNormalTodoList(todoList);
 
         return ResultData.success(eventsDto);

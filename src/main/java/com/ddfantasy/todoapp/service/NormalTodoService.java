@@ -27,4 +27,8 @@ public interface NormalTodoService extends IService<NormalTodo> {
      * */
     void saveWithEvents(EventsDto eventsDto);
 
+    /*
+     * 根据event_id获取todo
+     * */
+    List<NormalTodo> getTodoByEventId(Integer id);
 }

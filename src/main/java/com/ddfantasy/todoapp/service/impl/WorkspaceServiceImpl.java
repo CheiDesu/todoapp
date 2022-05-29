@@ -3,15 +3,12 @@ package com.ddfantasy.todoapp.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ddfantasy.todoapp.common.BaseContext;
 import com.ddfantasy.todoapp.common.ResultData;
+import com.ddfantasy.todoapp.controller.EventsController;
 import com.ddfantasy.todoapp.dto.WorkspaceDto;
-import com.ddfantasy.todoapp.entity.User;
-import com.ddfantasy.todoapp.entity.Workspace;
-import com.ddfantasy.todoapp.entity.WorkspaceUser;
+import com.ddfantasy.todoapp.entity.*;
 import com.ddfantasy.todoapp.mapper.WorkspaceMapper;
-import com.ddfantasy.todoapp.service.UserService;
-import com.ddfantasy.todoapp.service.WorkspaceService;
+import com.ddfantasy.todoapp.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ddfantasy.todoapp.service.WorkspaceUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +35,15 @@ public class WorkspaceServiceImpl extends ServiceImpl<WorkspaceMapper, Workspace
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private EventsTodoService eventsTodoService;
+
+    @Autowired
+    private EventsService eventsService;
+
+    @Autowired
+    private NormalTodoService todoService;
 
     /*
      * 获取工作区和对应用户
@@ -101,7 +107,37 @@ public class WorkspaceServiceImpl extends ServiceImpl<WorkspaceMapper, Workspace
     }
 
     /*
-     * 获取工作区和对应用户
+    * 获取工作区的events
+    * */
+    @Override
+    public ResultData listWithEvents() {
+        ResultData data = listWithUser();
+        List<WorkspaceDto> workspaceDtoList = (LinkedList)data.getData();
+
+
+        List<Integer> eventWorkspaceIds=new LinkedList<>();
+
+        //根据workspace的id获取Events
+        workspaceDtoList.forEach(item->{
+            eventWorkspaceIds.add(item.getId());
+
+        });
+
+
+        LambdaQueryWrapper<Events> eventsLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        eventsLambdaQueryWrapper.in(Events::getWorkspaceId,eventWorkspaceIds);
+        List<Events> eventsList = eventsService.list(eventsLambdaQueryWrapper);
+
+
+
+
+        return ResultData.success(eventsList);
+    }
+
+
+    /*
+     * 删除工作区和对应用户
+     * 不会删除真正的用户
      * ids是工作区的ids
      * */
     @Override
