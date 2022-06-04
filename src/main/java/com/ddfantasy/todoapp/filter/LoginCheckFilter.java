@@ -27,7 +27,13 @@ public class LoginCheckFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request=(HttpServletRequest)servletRequest;
         HttpServletResponse response=(HttpServletResponse)servletResponse;
-//        log.info("request---getRequestURI {}",request.getRequestURI());
+        //前端：8081，解决跨域问题
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
+        response.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+
+        //        log.info("request---getRequestURI {}",request.getRequestURI());
 
 //        不需要处理的请求路径
         String[] urls=new String[]{

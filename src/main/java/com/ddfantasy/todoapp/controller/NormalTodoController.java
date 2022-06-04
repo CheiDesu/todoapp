@@ -70,6 +70,7 @@ public class NormalTodoController {
     * */
     @PostMapping
     public ResultData save(@RequestBody NormalTodo todo){
+        todo.setUserId(BaseContext.getCurrentId());
         todoService.save(todo);
         return ResultData.success("添加成功");
     }
