@@ -172,7 +172,8 @@ import vueStore from "./store/index";
 import { mapActions, mapGetters } from "vuex";
 const uuidv4 = require("uuid/v4");
 import { logout } from "./utils/API/user";
-import { getTodoList,saveTodo,delTodo } from "./utils/API/Todo";
+import {getTodoList, saveTodo, delTodo, getTodoByID} from "./utils/API/Todo";
+import {geteventById} from "./utils/API/events";
 
 export default {
   components: {
@@ -220,7 +221,7 @@ export default {
     this.getAllTodos();
 
     console.log("getTodos ", this.getTodos);
-    
+
   },
   computed: {
     ...mapGetters(["getTodos", "getUserData"])
@@ -231,10 +232,11 @@ export default {
       !this.isFullScreen ? this.openFullscreen() : this.closeFullscreen();
     },
     getAllTodos(){
-        getTodoList().then((res)=>{
-        // console.log(res);
+      console.log(this.$route.params.id);
+        geteventById(this.$route.params.id).then((res)=>{
+         console.log(res);
         //赋值前端数据
-        this.todos=res.data;
+        this.todos=res.data.normalTodoList;
         console.log(this.todos);
       })
     },
@@ -277,7 +279,7 @@ export default {
           //跳转到登录页面
           this.$router.push("/login");
         }
-          
+
       })
       //调用接口
 
@@ -320,7 +322,7 @@ export default {
       // if(!(key instanceof Array)){
       //     key=[].push(key);
       //     console.log("aaaa");
-      // } 
+      // }
       delTodo(key).then(res=>{
         console.log(res);
       }).catch(err=>{
@@ -346,7 +348,7 @@ export default {
         };
 
         console.log(newTodo);
-        
+
         //调用后端接口
         saveTodo(newTodo).then(res=>{
           console.log(res);

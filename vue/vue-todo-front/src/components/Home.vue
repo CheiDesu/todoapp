@@ -36,6 +36,14 @@
             <span class="badge badge-primary">Total : {{getTodos.length || 0}}</span>
             <!-- <h6 class="count total">Total : {{todos.length}}</h6> -->
           </div>
+          <div class="col-4">
+            <span class="badge badge-success">Success : {{completedTodos.length || 0}}</span>
+            <!-- <h6 class="count completed">Completed : </h6> -->
+          </div>
+          <div class="col-4">
+            <span class="badge badge-warning">Pending : {{pendingTodos.length || 0}}</span>
+            <!-- <h6 class="count pending">Pending : {{pendingTodos.length}}</h6> -->
+          </div>
           <div class="col-md-12 mt-3">
             <div class="form-group">
               <input
@@ -63,9 +71,9 @@
                 <li
                   class="todo-item"
                   :class="todo.completed ? 'done': 'undone'"
-                  v-for="(todo,key) in getTodos"
+                  v-for="(todo,key) in todos"
                   :key="key"
-                  @click="jump()"
+                  @click="showDetail(todo, $event)"
                 >
                   <div class="handle-wrapper">
                     <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
@@ -73,24 +81,10 @@
                   </div>
                   <div class="todo-info">
                     <span class="label todo-title">{{todo.title}}</span>
-                    <!-- <span class="label todo-description" v-if="todo.description">
-                      <i class="fa fa-commenting-o" aria-hidden="true"></i>
-                    </span>-->
-                    <!-- <span class="label todo-tags" v-if="todo.tags">
-                      <span
-                        class="badge badge-pill badge-info"
-                        :style="{background:tag.color, color:'#fff'}"
-                        v-for="(tag, key) in todo.tags"
-                        :key="key"
-                      >
-                        <i class="fa fa-tag" aria-hidden="true"></i>
-                        {{tag.name}}
-                      </span>
-                    </span>-->
                   </div>
                   <div class="todo-priority">
                     <div class="priority-dot" :style="{background:todo.priorityColor}"></div>
-                    <span>{{todo.priority }} Priority</span>
+                    <span>{{todo.important }} Important</span>
                   </div>
                   <div class="todo-tags">
                     <i
@@ -100,7 +94,7 @@
                       aria-haspopup="true"
                       aria-expanded="false"
                     ></i>
-                    <div class="dropdown-menu" v-if="todo.tags.length <= 0">
+                    <!-- <div class="dropdown-menu" v-if="todo.tags.length <= 0">
                       <div class="dropdown-header">
                         <i class="fa fa-tag" aria-hidden="true"></i> Tags
                       </div>
@@ -110,34 +104,25 @@
                       <div class="dropdown-header">
                         <i class="fa fa-tag" aria-hidden="true"></i> Tags
                       </div>
-                      <span
-                        class="badge badge-pill badge-info"
-                        :style="{background:tag.color, color:'#fff'}"
-                        v-for="(tag, key) in todo.tags"
-                        :key="key"
-                      >
-                        <!-- <i class="fa fa-tag" aria-hidden="true"></i> -->
-                        {{tag.name}}
-                      </span>
-                    </div>
-                    <!-- <span class="label todo-tags" v-if="todo.tags">
-                      <span
-                        class="badge badge-pill badge-info"
-                        :style="{background:tag.color, color:'#fff'}"
-                        v-for="(tag, key) in todo.tags"
-                        :key="key"
-                      >
-                        <i class="fa fa-tag" aria-hidden="true"></i>
-                        {{tag.name}}
-                      </span>
-                    </span>-->
+                    </div> -->
                   </div>
 
-                  <span class="todo-date">{{todo.inDate}}</span>
+                  <span class="todo-date">{{todo.deadline}}</span>
                   <div class="actions">
-              
                     <button
-                      @click.stop="removeTodo(key)"
+                      type="button"
+                      class="btn-picto"
+                      @click.stop="completeTodo(key)"
+                      :aria-label="todo.completed ? 'Undone' : 'Done'"
+                      :title="todo.completed ? 'Undone' : 'Done'"
+                    >
+                      <i
+                        aria-hidden="true"
+                        class="material-icons"
+                      >{{ todo.finished ? 'check_box' : 'check_box_outline_blank' }}</i>
+                    </button>
+                    <button
+                      @click.stop="removeTodo(todo.id)"
                       type="button"
                       aria-label="Delete"
                       title="Delete"
@@ -151,7 +136,7 @@
             </draggable>
           </VuePerfectScrollbar>
         </ul>
-        <div class="todo-footer" v-if="getTodos.length >0">
+        <div class="todo-footer" v-if="todos.length >0">
           <ul>
             <div class="actions">
               <button
@@ -185,8 +170,10 @@ import todoDetailModal from "./TodoDetailModal";
 import { Bus } from "./utils/bus";
 import vueStore from "./store/index";
 import { mapActions, mapGetters } from "vuex";
-import TodoVue from "./Todo.vue";
 const uuidv4 = require("uuid/v4");
+import { logout } from "./utils/API/user";
+import { getTodoList,saveTodo,delTodo } from "./utils/API/Todo";
+import {addEvent, getevents} from "./utils/API/events";
 
 export default {
   components: {
@@ -196,14 +183,14 @@ export default {
     todoDetailModal,
     Bus
   },
-  name: "Todo",
+  name: "Home",
   data: function() {
     return {
-      title: "SUMMARY-TODO-LIST",
+      title: "Events-LIST",
       todos: [],
       completedTodos: 0,
       pendingTodos: 0,
-      checkkAll: false,
+      checkAll: false,
       newTodoText: "",
       isFullScreen: false,
       elem: document.documentElement,
@@ -220,6 +207,7 @@ export default {
   created() {
     this.userLoggedIn = true;
     let that = this;
+    //控制全屏开关
     document.onfullscreenchange = function(event) {
       if (!that.isFullScreen) {
         that.isFullScreen = true;
@@ -227,8 +215,13 @@ export default {
         that.isFullScreen = false;
       }
     };
-    this.updateTodos();
+    this.updateEvents();
+
+    //从后台请求Events
+    this.getAllEvents();
+
     console.log("getTodos ", this.getTodos);
+
   },
   computed: {
     ...mapGetters(["getTodos", "getUserData"])
@@ -237,6 +230,15 @@ export default {
     ...mapActions(["createNewTodo", "markAsComplete", "deleteTodo"]),
     toggleFullScreen() {
       !this.isFullScreen ? this.openFullscreen() : this.closeFullscreen();
+    },
+    getAllEvents(){
+      getevents().then((res)=>{
+        // console.log(res);
+        //赋值前端数据
+        this.todos=res.data;
+        console.log(this.todos);
+        console.log(this.todos[0].id);
+      })
     },
     stopTheEvent(event) {
       event.stopPropagation();
@@ -270,21 +272,17 @@ export default {
       }
     },
     googleLogout() {
-      let that = this;
-      var provider = new firebase.auth.GoogleAuthProvider();
-      firebase
-        .auth()
-        .signOut()
-        .then(
-          function() {
-            that.userLoggedIn = false;
-            that.showNotification("You are logged out", "alert-danger");
-            that.$router.replace("/");
-          },
-          function(error) {
-            console.error("Sign Out Error", error);
-          }
-        );
+      logout().then((res)=>{
+        console.log(res);
+        if(res.code==1){
+          //退出
+          //跳转到登录页面
+          this.$router.push("/login");
+        }
+
+      })
+      //调用接口
+
     },
     showNotification(msg, alertType) {
       this.$notify({
@@ -294,36 +292,45 @@ export default {
         duration: 10000
       });
     },
-    jump() {
-      this.$router.push('todo');
-    },
-
     showDetail(todoItem, e) {
       console.log(
         "$(e.target).hasClass('.fa-tag') ",
         $(e.target).hasClass("fa-tag")
       );
 
-    
-      if ($(e.target).hasClass("fa-tag")) {
-        console.log("clicked ", e.target);
-        return false;
-      } else {
-        e.preventDefault();
-        // e.stopPropagation();
-        Bus.$emit("showDetailedTaskModal", todoItem);
-      }
+      this.$router.push({name:"Todo",params:{id:this.todos[0].id}});
+      // if ($(e.target).hasClass("fa-tag")) {
+      //   console.log("clicked ", e.target);
+      //   return false;
+      // } else {
+      //   e.preventDefault();
+      //   // e.stopPropagation();
+      //   Bus.$emit("showDetailedTaskModal", todoItem);
+      // }
     },
     clearTodos() {
       this.$store.state.todos = [];
       this.updateTodos();
     },
-    updateTodos() {
-      this.completedTodos = this.getTodos.filter(item => item.completed);
-      this.pendingTodos = this.getTodos.filter(item => !item.completed);
+    updateEvents() {
+      this.getAllEvents();
+      this.completedTodos = this.getTodos.filter(item => item.finished);
+      this.pendingTodos = this.getTodos.filter(item => !item.finished);
     },
     removeTodo(key) {
-      this.deleteTodo(key);
+      console.log(key);
+      // this.deleteTodo(key);
+      // if(!(key instanceof Array)){
+      //     key=[].push(key);
+      //     console.log("aaaa");
+      // }
+      delTodo(key).then(res=>{
+        console.log(res);
+      }).catch(err=>{
+        console.log(err);
+      })
+      //自己写，不用vuex
+
       this.updateTodos();
     },
     completeTodo(key) {
@@ -334,20 +341,22 @@ export default {
       if (this.newTodoText.length > 0) {
         e.preventDefault();
         let newTodo = {
-          completed: false,
-          id: uuidv4(),
+          finished: false,
+          id: null,
           title: this.newTodoText,
-          description: null,
-          inDate: moment().format("MMM D"),
-          priority: "None",
-          tags: [],
-          priorityColor: "#11cdef"
+          deadline: moment().format("YYYY-MM-DD HH:mm:ss"),
+          important: 0,
         };
-        this.createNewTodo(newTodo);
-        // this.userData.todos.push(newTodo);
 
-        // this.todos.unshift(newTodo);
-        newTodo.id++;
+        console.log(newTodo);
+
+        //调用后端接口
+        addEvent(newTodo).then(res=>{
+          console.log(res);
+          // 刷新Events
+          this.getAllEvents();
+        })
+
         this.newTodoText = "";
         this.updateTodos();
       }
@@ -649,7 +658,7 @@ form input,
 }
 .todo-item .handle-wrapper {
   width: 20px;
-  color: #e90d0d;
+  color: #b5b5b5;
   opacity: 0;
 }
 #todolist li.todo-item:hover .handle-wrapper {
