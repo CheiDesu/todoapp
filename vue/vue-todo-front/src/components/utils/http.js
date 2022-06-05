@@ -54,9 +54,10 @@ const get = (url, data) => {
     });
 };
 const deleter = (url, data) => {
+    console.log("data in deleter"+data);
     return new Promise((resolve, reject) => {
         instance
-            .delete(url, { params: data })
+            .delete(url)
             .then((res) => {
                 resolve(res);
             })

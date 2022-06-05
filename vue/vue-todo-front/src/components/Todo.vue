@@ -122,7 +122,7 @@
                       >{{ todo.finished ? 'check_box' : 'check_box_outline_blank' }}</i>
                     </button>
                     <button
-                      @click.stop="removeTodo(key)"
+                      @click.stop="removeTodo(todo.id)"
                       type="button"
                       aria-label="Delete"
                       title="Delete"
@@ -317,13 +317,16 @@ export default {
     removeTodo(key) {
       console.log(key);
       // this.deleteTodo(key);
+      // if(!(key instanceof Array)){
+      //     key=[].push(key);
+      //     console.log("aaaa");
+      // } 
       delTodo(key).then(res=>{
         console.log(res);
       }).catch(err=>{
         console.log(err);
       })
       //自己写，不用vuex
-
 
       this.updateTodos();
     },
@@ -339,7 +342,7 @@ export default {
           id: null,
           title: this.newTodoText,
           deadline: moment().format("YYYY-MM-DD HH:mm:ss"),
-          important: null,
+          important: 0,
         };
 
         console.log(newTodo);

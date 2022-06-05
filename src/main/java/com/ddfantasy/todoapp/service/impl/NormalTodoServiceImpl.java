@@ -41,9 +41,9 @@ public class NormalTodoServiceImpl extends ServiceImpl<NormalTodoMapper, NormalT
 
         LambdaQueryWrapper<EventsTodo> eventsTodoLambdaQueryWrapper = new LambdaQueryWrapper<>();
         eventsTodoLambdaQueryWrapper.in(EventsTodo::getNormalTodoId,ids);
-        boolean remove = eventsTodoService.remove(eventsTodoLambdaQueryWrapper);
+        eventsTodoService.remove(eventsTodoLambdaQueryWrapper);
 
-        return remove&&b;
+        return b;
     }
 
 

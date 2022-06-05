@@ -9,10 +9,9 @@ export function saveTodo(config){
 export function updateTodo(config){
     return put("/todo",config);
 }
-
 //delete todo
 export function delTodo(id){
-    return deleter("/todo/delete",id);
+    return deleter("/todo/delete/"+id);
 }
 
 //get todo by list

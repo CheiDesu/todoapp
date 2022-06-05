@@ -273,6 +273,7 @@ import ClickOutside from "vue-click-outside";
 import vueStore from "./store/index";
 import { mapActions, mapGetters } from "vuex";
 import  { updateTodo } from "../components/utils/API/Todo"
+import { login } from './utils/API/user';
 export default {
   name: "todoDetailModal",
   data() {
@@ -311,23 +312,42 @@ export default {
     ...mapActions(["addNewTag", "changeTagColor", "updateTodoTags"]),
     saveTaskData() {
       //by chei
-      updateTodo();
+      //先查看data绑定那些回显的数据再传入
+      console.log(this.taskDetail);
 
-      // if (this.taskDetail.priority) {
-      //   if (this.taskDetail.priority === "High")
-      //     this.taskDetail.priorityColor = "#f5365c";
-      //   if (this.taskDetail.priority === "Medium")
-      //     this.taskDetail.priorityColor = "#ffbb33";
-      //   if (this.taskDetail.priority === "Low")
-      //     this.taskDetail.priorityColor = "#5e72e4";
-      //   if (this.taskDetail.priority === "None")
-      //     this.taskDetail.priorityColor = "#11cdef";
-      // }
+    
+      if (this.taskDetail.priority) {
+        if (this.taskDetail.priority === "High")
+          {
+            this.taskDetail.important=4;
+            this.taskDetail.priorityColor = "#f5365c";
+            }
+        if (this.taskDetail.priority === "Medium")
+          {
+            this.taskDetail.important=3;
+            this.taskDetail.priorityColor = "#ffbb33";
+            }
+        if (this.taskDetail.priority === "Low")
+          {
+            this.taskDetail.important=2;
+            this.taskDetail.priorityColor = "#5e72e4";
+            }
+        if (this.taskDetail.priority === "None")
+          {
+            this.taskDetail.important=1;
+            this.taskDetail.priorityColor = "#11cdef";
+            }
+      }
       // this.updateTodoTags({
       //   id: this.taskDetail.id,
       //   tags: this.taskDetail.tags
       // });
-      // $("#genericPopup").modal("hide");
+
+      updateTodo(this.taskDetail).then(res=>{
+        console.log(res);
+      })
+
+      $("#genericPopup").modal("hide");
     },
     editTodoTitle() {
       this.showEditTodoTitleField = !this.showEditTodoTitleField;

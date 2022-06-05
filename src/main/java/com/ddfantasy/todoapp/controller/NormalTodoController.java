@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -98,10 +99,24 @@ public class NormalTodoController {
     * （批量）删除todo
     *   处理关系表,关系表里的todo也要删除？
     * */
-    @DeleteMapping("/delete")
-    public ResultData delete(@RequestBody List<Integer> ids){
+    @DeleteMapping("/deleteBatch")
+    public ResultData deleteBatch(@RequestBody List<Integer> ids){
 
         boolean b = todoService.removeByIdsWithEvents(ids);
+        return b?ResultData.success("删除成功"):ResultData.error("删除失败");
+
+    }
+
+    /*
+     *  删除todo，跟上面对比请求参数类型不同
+     *   处理关系表,关系表里的todo也要删除？
+     * */
+    @DeleteMapping("/delete/{id}")
+    public ResultData delete(@PathVariable Integer id){
+
+        LinkedList<Integer> list = new LinkedList<>();
+        list.add(id);
+        boolean b = todoService.removeByIdsWithEvents(list);
         return b?ResultData.success("删除成功"):ResultData.error("删除失败");
 
     }
