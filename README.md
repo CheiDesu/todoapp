@@ -51,6 +51,7 @@
     2. controller多次调用的代码块封装到service
     3. 用户密码加密认证（md5等）
     4. 存在bean相互循环依赖的问题。。。
+    5. 前端的日历组件存在显示不完全的问题
 
 1. 接口文档：
     http://localhost:8081/doc.html#/home
