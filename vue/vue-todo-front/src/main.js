@@ -11,6 +11,13 @@ import register from './components/Register.vue'
 import store from './components/store/index'
 import home from './components/Home.vue'
 import moment from 'moment'
+import cal from "./components/cal";
+import '../node_modules/@livelybone/vue-datepicker/lib/css/index.css'
+import '../node_modules/@livelybone/vue-datepicker/lib/css/index.scss'
+import { Datepicker, Timepicker, DatetimePicker, DateRangePicker } from '@livelybone/vue-datepicker';
+
+// Global register
+Vue.component('datetime-picker', DatetimePicker);
 
 const firebaseConfig = {
   apiKey: "AIzaSyAjBiYXlMX5w-AoXmc2FTi7sfgHr8He7S8",
@@ -28,13 +35,16 @@ Vue.use(Notifications)
 Vue.use(VueRouter);
 Vue.prototype.$moment = moment;
 
+
+
 const routes = [
   {path: '/', component: login},
   {path: '/login', component: login, name: "Login"},
   {path: '/todo', component: todo, name: "Todo"},
   {path: "*", component: PageNotFound},
   {path: '/register', component: register},
-  {path: '/home', component: home, name: "Home"}
+  {path: '/home', component: home, name: "Home"},
+  {path:"/cal",component: cal}
 ];
 
 const router = new VueRouter({
@@ -47,3 +57,5 @@ new Vue({
   el: '#app',
   render: h => h(App)
 })
+
+

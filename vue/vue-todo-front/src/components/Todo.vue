@@ -73,7 +73,6 @@
                   :class="todo.finished ? 'done': 'undone'"
                   v-for="(todo,key) in todos"
                   :key="key"
-                  @click="showDetail(todo, $event)"
                 >
                   <div class="handle-wrapper">
                     <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
@@ -82,18 +81,19 @@
                   <div class="todo-info">
                     <span class="label todo-title">{{ todo.title }}</span>
                   </div>
-                  <div class="todo-priority">
+                  <div class="todo-priority"
+                       @click="showDetail(todo, $event)">
                     <div class="priority-dot" :style="{background:priorityColor[todo.important-1]}"></div>
                     <span>{{ important_level[todo.important - 1] }}</span>
                   </div>
                   <div class="todo-tags">
-                    <i
-                      class="fa fa-tag"
-                      aria-hidden="true"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    ></i>
+                    <datetime-picker
+                      timeType="second"
+                      :value="todo.deadline"
+                      @input="val=>{changeDate(val,key)}"
+                      min="2018-08-24 02:10:02"
+                      :timeStr="timeStr"
+                    />
                     <!-- <div class="dropdown-menu" v-if="todo.tags.length <= 0">
                       <div class="dropdown-header">
                         <i class="fa fa-tag" aria-hidden="true"></i> Tags
@@ -107,7 +107,8 @@
                     </div> -->
                   </div>
 
-                  <span class="todo-date">{{ todo.deadline }}</span>
+                  <!--                  <span class="todo-date">{{ todo.deadline }}</span>-->
+                  <span class="todo-date"></span>
                   <div class="actions">
                     <button
                       type="button"
@@ -201,7 +202,9 @@ export default {
       priorityColor: ["#11cdef", "#5e72e4", "#ffbb33", "#f5365c"],
       userData: {},
       userInfo: "",
-      important_level: ["不重要不紧急", "紧急不重要", "重要不紧急", "紧急且重要"]
+      important_level: ["不重要不紧急", "紧急不重要", "重要不紧急", "紧急且重要"],
+      timeStr: ['hour', 'min', 'sec'],
+      // time: '2019-02-01 01:02:01',
     };
   },
   mounted() {
@@ -234,6 +237,13 @@ export default {
     ...mapGetters(["getTodos", "getUserData"])
   },
   methods: {
+    changeDate: function (val,key) {
+      this.todos[key].deadline = val;
+      console.log(this.todos[key].deadline);
+      updateTodo(this.todos[key]);
+      this.getAllTodos();
+      this.updateTodos();
+    },
     ...mapActions(["createNewTodo", "markAsComplete", "deleteTodo"]),
     toggleFullScreen() {
       !this.isFullScreen ? this.openFullscreen() : this.closeFullscreen();
@@ -364,7 +374,7 @@ export default {
     addnewTodo(e) {
       if (this.newTodoText.length > 0) {
         e.preventDefault();
-        let date=this.$moment(new Date()).format("YYYY-MM-DD HH:MM:SS");
+        let date = this.$moment(new Date()).format("YYYY-MM-DD HH:MM:SS");
         let newTodo = {
           createTime: "",
           //获取events的id
