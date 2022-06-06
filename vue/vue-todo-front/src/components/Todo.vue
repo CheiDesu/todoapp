@@ -33,15 +33,15 @@
         </div>
         <div class="row">
           <div class="col-4">
-            <span class="badge badge-primary">Total : {{ getTodos.length || 0 }}</span>
+            <span class="badge badge-primary">Total : {{ todos.length }}</span>
             <!-- <h6 class="count total">Total : {{todos.length}}</h6> -->
           </div>
           <div class="col-4">
-            <span class="badge badge-success">Success : {{ completedTodos.length || 0 }}</span>
+            <span class="badge badge-success">Success : {{ completedTodos }}</span>
             <!-- <h6 class="count completed">Completed : </h6> -->
           </div>
           <div class="col-4">
-            <span class="badge badge-warning">Pending : {{ pendingTodos.length || 0 }}</span>
+            <span class="badge badge-warning">Pending : {{ todos.length - completedTodos }}</span>
             <!-- <h6 class="count pending">Pending : {{pendingTodos.length}}</h6> -->
           </div>
           <div class="col-md-12 mt-3">
@@ -83,8 +83,8 @@
                     <span class="label todo-title">{{ todo.title }}</span>
                   </div>
                   <div class="todo-priority">
-                    <div class="priority-dot" :style="{background:todo.priorityColor}"></div>
-                    <span>{{ todo.important }} Important</span>
+                    <div class="priority-dot" :style="{background:priorityColor[todo.important-1]}"></div>
+                    <span>{{ important_level[todo.important - 1] }}</span>
                   </div>
                   <div class="todo-tags">
                     <i
@@ -177,6 +177,7 @@ import {logout} from "./utils/API/user";
 import {getTodoList, saveTodo, delTodo, getTodoByID, updateTodo} from "./utils/API/Todo";
 import {addEveTodo, delEveTodo, geteventById, geteveTodoById} from "./utils/API/events";
 
+
 export default {
   components: {
     VuePerfectScrollbar,
@@ -197,9 +198,10 @@ export default {
       isFullScreen: false,
       elem: document.documentElement,
       userLoggedIn: false,
-      priorityColor: null,
+      priorityColor: ["#11cdef", "#5e72e4", "#ffbb33", "#f5365c"],
       userData: {},
-      userInfo: ""
+      userInfo: "",
+      important_level: ["不重要不紧急", "紧急不重要", "重要不紧急", "紧急且重要"]
     };
   },
   mounted() {
@@ -210,7 +212,7 @@ export default {
   },
   created() {
     this.userLoggedIn = true;
-    this.id = this.$route.params.id;
+    this.id = this.$route.query.id;
     let that = this;
     //控制全屏开关
     document.onfullscreenchange = function (event) {
@@ -237,13 +239,25 @@ export default {
       !this.isFullScreen ? this.openFullscreen() : this.closeFullscreen();
     },
     getAllTodos() {
-      console.log(this.$route.params.id);
       geteveTodoById(this.id).then((res) => {
         console.log(res);
         //赋值前端数据
         this.todos = res.data.normalTodoList;
-        this.userData={userId: res.data.userId};
-        this.title=res.data.title;
+        this.userData = {userId: res.data.userId};
+        this.title = res.data.title;
+        console.log(this.todos);
+
+        if (this.todos.length > 0) {
+          // this.
+          let sum = 0;
+          this.todos.forEach(item => {
+            console.log(sum);
+            sum += item.finished ? 1 : 0;
+            console.log(sum);
+
+          })
+          this.completedTodos = sum;
+        }
       })
     },
     stopTheEvent(event) {
@@ -343,22 +357,25 @@ export default {
     completeTodo(key) {
       this.todos[key].finished = !this.todos[key].finished;
       updateTodo(this.todos[key]);
+      this.getAllTodos();
+      this.updateTodos();
       //this.updateTodos();
     },
     addnewTodo(e) {
       if (this.newTodoText.length > 0) {
         e.preventDefault();
+        let date=this.$moment(new Date()).format("YYYY-MM-DD HH:MM:SS");
         let newTodo = {
           createTime: "",
           //获取events的id
-          id: this.$route.params.id,
+          id: this.$route.query.id,
           normalTodoList: [
             {
               createTime: "",
-              deadline: "",
+              deadline: date,
               finished: false,
               id: 0,
-              important: 0,
+              important: 1,
               title: this.newTodoText,
               updateTime: "",
               userId: this.userData.userId

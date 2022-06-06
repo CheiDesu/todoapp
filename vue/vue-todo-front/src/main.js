@@ -10,7 +10,7 @@ import todo from './components/Todo.vue'
 import register from './components/Register.vue'
 import store from './components/store/index'
 import home from './components/Home.vue'
-
+import moment from 'moment'
 
 const firebaseConfig = {
   apiKey: "AIzaSyAjBiYXlMX5w-AoXmc2FTi7sfgHr8He7S8",
@@ -26,6 +26,7 @@ firebase.initializeApp(firebaseConfig)
 Vue.config.productionTip = false
 Vue.use(Notifications)
 Vue.use(VueRouter);
+Vue.prototype.$moment = moment;
 
 const routes = [
   {path: '/', component: login},

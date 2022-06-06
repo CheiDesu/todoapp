@@ -33,17 +33,10 @@
         </div>
         <div class="row">
           <div class="col-4">
-            <span class="badge badge-primary">Total : {{getTodos.length || 0}}</span>
+            <span class="badge badge-success">Total : {{todos.length }}</span>
             <!-- <h6 class="count total">Total : {{todos.length}}</h6> -->
           </div>
-          <div class="col-4">
-            <span class="badge badge-success">Success : {{completedTodos.length || 0}}</span>
-            <!-- <h6 class="count completed">Completed : </h6> -->
-          </div>
-          <div class="col-4">
-            <span class="badge badge-warning">Pending : {{pendingTodos.length || 0}}</span>
-            <!-- <h6 class="count pending">Pending : {{pendingTodos.length}}</h6> -->
-          </div>
+
           <div class="col-md-12 mt-3">
             <div class="form-group">
               <input
@@ -82,45 +75,10 @@
                   <div class="todo-info">
                     <span class="label todo-title">{{todo.title}}</span>
                   </div>
-                  <div class="todo-priority">
-                    <div class="priority-dot" :style="{background:todo.priorityColor}"></div>
-                    <span>{{todo.important }} Important</span>
-                  </div>
-                  <div class="todo-tags">
-                    <i
-                      class="fa fa-tag"
-                      aria-hidden="true"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    ></i>
-                    <!-- <div class="dropdown-menu" v-if="todo.tags.length <= 0">
-                      <div class="dropdown-header">
-                        <i class="fa fa-tag" aria-hidden="true"></i> Tags
-                      </div>
-                      <div class="no-tags">No tags attached</div>
-                    </div>
-                    <div class="dropdown-menu" v-if="todo.tags.length > 0">
-                      <div class="dropdown-header">
-                        <i class="fa fa-tag" aria-hidden="true"></i> Tags
-                      </div>
-                    </div> -->
-                  </div>
+
 
                   <span class="todo-date">{{todo.deadline}}</span>
                   <div class="actions">
-                    <button
-                      type="button"
-                      class="btn-picto"
-                      @click.stop="completeTodo(key)"
-                      :aria-label="todo.completed ? 'Undone' : 'Done'"
-                      :title="todo.completed ? 'Undone' : 'Done'"
-                    >
-                      <i
-                        aria-hidden="true"
-                        class="material-icons"
-                      >{{ todo.finished ? 'check_box' : 'check_box_outline_blank' }}</i>
-                    </button>
                     <button
                       @click.stop="removeTodo(todo.id)"
                       type="button"
@@ -299,7 +257,7 @@ export default {
         $(e.target).hasClass("fa-tag")
       );
       //跳转到对应的大todo页面，获取其中的小todo
-      this.$router.push({name:"Todo",params:{id:todoItem.id}});
+      this.$router.push({name:"Todo",query:{id:todoItem.id}});
       // if ($(e.target).hasClass("fa-tag")) {
       //   console.log("clicked ", e.target);
       //   return false;
@@ -345,18 +303,7 @@ export default {
         e.preventDefault();
         let newEvents = {
           createTime: "",
-          normalTodoList: [
-            {
-              "createTime": "",
-              "deadline": "",
-              "finished": true,
-              "id": 0,
-              "important": 0,
-              "title": "",
-              "updateTime": "",
-              "userId": this.userData.userId
-            }
-          ],
+          normalTodoList: [],
           title: this.newTodoText,
           updateTime: "",
           userId: this.userData.userId,
