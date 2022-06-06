@@ -53,8 +53,27 @@
     4. 存在bean相互循环依赖的问题。。。
 
 1. 接口文档：
-    http://localhost:8080/doc.html#/home
+    http://localhost:8081/doc.html#/home
     
     
 2. 前端代码参考：
     https://blog.csdn.net/weixin_44816309/article/details/109677098
+
+
+# 使用说明：
+前端服务器根目录：http://localhost:8080
+
+登陆页面:http://localhost:8080/login
+
+登陆之后会跳转到home界面，展示各个大todo，可在该页面进行增删查操作
+
+![](https://picgo-1304285457.cos.ap-guangzhou.myqcloud.com/images/20220606135143.png)
+
+单击其中的大todo，即可进入该大todo的具体页面：/todo 展示了大todo下的各个待办事项
+
+![](https://picgo-1304285457.cos.ap-guangzhou.myqcloud.com/images/20220606135157.png)
+
+各个页面的右上角可以随时进行logout
+
+![](https://picgo-1304285457.cos.ap-guangzhou.myqcloud.com/images/20220606135240.png)
+

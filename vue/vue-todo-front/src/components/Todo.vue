@@ -70,7 +70,7 @@
               <transition-group>
                 <li
                   class="todo-item"
-                  :class="todo.completed ? 'done': 'undone'"
+                  :class="todo.finished ? 'done': 'undone'"
                   v-for="(todo,key) in todos"
                   :key="key"
                   @click="showDetail(todo, $event)"
@@ -113,8 +113,8 @@
                       type="button"
                       class="btn-picto"
                       @click.stop="completeTodo(key)"
-                      :aria-label="todo.completed ? 'Undone' : 'Done'"
-                      :title="todo.completed ? 'Undone' : 'Done'"
+                      :aria-label="todo.finished ? 'Undone' : 'Done'"
+                      :title="todo.finished ? 'Undone' : 'Done'"
                     >
                       <i
                         aria-hidden="true"
@@ -174,7 +174,7 @@ import {mapActions, mapGetters} from "vuex";
 
 const uuidv4 = require("uuid/v4");
 import {logout} from "./utils/API/user";
-import {getTodoList, saveTodo, delTodo, getTodoByID} from "./utils/API/Todo";
+import {getTodoList, saveTodo, delTodo, getTodoByID, updateTodo} from "./utils/API/Todo";
 import {addEveTodo, delEveTodo, geteventById, geteveTodoById} from "./utils/API/events";
 
 export default {
@@ -339,9 +339,11 @@ export default {
 
       this.updateTodos();
     },
+    // 标识完成
     completeTodo(key) {
-      this.markAsComplete(key);
-      this.updateTodos();
+      this.todos[key].finished = !this.todos[key].finished;
+      updateTodo(this.todos[key]);
+      //this.updateTodos();
     },
     addnewTodo(e) {
       if (this.newTodoText.length > 0) {
@@ -354,7 +356,7 @@ export default {
             {
               createTime: "",
               deadline: "",
-              finished: true,
+              finished: false,
               id: 0,
               important: 0,
               title: this.newTodoText,
@@ -406,7 +408,7 @@ section.main-section {
   font-size: 16px;
 }
 
-.count.completed {
+.count.finished {
   text-align: center;
 }
 
@@ -683,7 +685,7 @@ form input,
     font-size: 1.5rem;
   }
 
-  .count.completed {
+  .count.finished {
     text-align: left;
   }
 
