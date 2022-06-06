@@ -20,7 +20,7 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import sun.security.x509.RDN;
+//import sun.security.x509.RDN;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -28,7 +28,7 @@ import java.util.List;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author chei
@@ -49,28 +49,28 @@ public class EventsController {
     private EventsTodoService eventsTodoService;
 
     /*
-    * 按照创建时间排序
-    * */
+     * 按照创建时间排序
+     * */
     @GetMapping("/list")
-    public ResultData list(String title){
+    public ResultData list(String title) {
 
 
         LambdaQueryWrapper<Events> wrapper = new LambdaQueryWrapper<>();
 
         //        获取当前登录用户id
         Integer currentId = BaseContext.getCurrentId();
-        wrapper.eq(Events::getUserId,currentId);
+        wrapper.eq(Events::getUserId, currentId);
 
 //        对大todo的模糊查询
-        wrapper.like(StringUtils.isNotEmpty(title), Events::getTitle,title);
+        wrapper.like(StringUtils.isNotEmpty(title), Events::getTitle, title);
 //        根据创建时间排序
         wrapper.orderByAsc(Events::getCreateTime);
         List<Events> list = eventsService.list(wrapper);
         List<EventsDto> eventsDtoList = new LinkedList();
-        list.forEach(item->{
-            EventsDto temp=new EventsDto();
+        list.forEach(item -> {
+            EventsDto temp = new EventsDto();
             //将事件子类赋值过去
-            BeanUtils.copyProperties(item,temp);
+            BeanUtils.copyProperties(item, temp);
 
 //            查询大事件对应的todo信息
 //            NormalTodo todo = todoService.getById(item.getNormalTodoId());
@@ -85,16 +85,16 @@ public class EventsController {
 
 
     /*
-    * 根据id获取单个事件和对应todo,返回一个包含事件和对应todo列表的dto对象
-    * */
+     * 根据id获取单个事件和对应todo,返回一个包含事件和对应todo列表的dto对象
+     * */
     @GetMapping("/{id}")
-    public ResultData getEventWithTodoById(@PathVariable Integer id){
+    public ResultData getEventWithTodoById(@PathVariable Integer id) {
 
         Events events = eventsService.getById(id);
         EventsDto eventsDto = new EventsDto();
-        if(events==null)return ResultData.error("获取失败");
+        if (events == null) return ResultData.error("获取失败");
 
-        BeanUtils.copyProperties(events,eventsDto);
+        BeanUtils.copyProperties(events, eventsDto);
 
         List<NormalTodo> todoList = todoService.getTodoByEventId(id);
 
@@ -105,12 +105,12 @@ public class EventsController {
 
 
     /*
-    * 更改events里面的todo的状态
-    * 流程：
-    * 通过id获取eventsDto,然后修改
-    * */
+     * 更改events里面的todo的状态
+     * 流程：
+     * 通过id获取eventsDto,然后修改
+     * */
     @PutMapping
-    public ResultData update(@RequestBody EventsDto eventsDto){
+    public ResultData update(@RequestBody EventsDto eventsDto) {
 
         eventsService.updateById(eventsDto);
 
@@ -122,18 +122,18 @@ public class EventsController {
 
 
     /*
-    * 添加event
-    * 传入dto，以操作两个基本表和和关系表
-    * */
+     * 添加event
+     * 传入dto，以操作两个基本表和和关系表
+     * */
     @PostMapping
-    public ResultData addEvent(@RequestBody EventsDto eventsDto){
+    public ResultData addEvent(@RequestBody EventsDto eventsDto) {
 
         //先保存event
         eventsService.save(eventsDto);
         List<NormalTodo> normalTodoList = eventsDto.getNormalTodoList();
 
         //若底下的todoList为空，则直接返回
-        if(normalTodoList!=null) {
+        if (normalTodoList != null) {
             todoService.saveWithEvents(eventsDto);
         }
 
@@ -141,11 +141,11 @@ public class EventsController {
     }
 
     /*
-    * 要点进去某个events才能编辑/addtodo
-    * 可以添加，events里面的todo
-    * */
+     * 要点进去某个events才能编辑/addtodo
+     * 可以添加，events里面的todo
+     * */
     @PostMapping("/addTodo")
-    public ResultData addTodo(@RequestBody EventsDto eventsDto){
+    public ResultData addTodo(@RequestBody EventsDto eventsDto) {
         //封装成service，或者直接调用todoService的方法
         todoService.saveWithEvents(eventsDto);
 
@@ -159,35 +159,34 @@ public class EventsController {
      * 不会删除event
      * */
     @DeleteMapping("/deleteTodo")
-    public ResultData deleteTodo(@RequestBody List<Integer> ids){
+    public ResultData deleteTodo(@RequestBody  List<Integer> ids) {
         boolean b = todoService.removeByIdsWithEvents(ids);
-        return b?ResultData.success("删除成功"):ResultData.error("删除失败");
+        return b ? ResultData.success("删除成功") : ResultData.error("删除失败");
     }
 
     /*
-    * 删除整个event以及对应todo
-    * */
+     * 删除整个event以及对应todo
+     * */
     @DeleteMapping()
-    public ResultData deleteEvent(@RequestBody List<Integer> ids){
+    public ResultData deleteEvent(@RequestBody List<Integer> ids) {
         boolean isRemove = eventsService.removeByIds(ids);
 
         //查询todo的ids
         LambdaQueryWrapper<EventsTodo> eventsTodoLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        eventsTodoLambdaQueryWrapper.in(EventsTodo::getEventsId,ids);
+        eventsTodoLambdaQueryWrapper.in(EventsTodo::getEventsId, ids);
         //获取todo
         List<EventsTodo> eventsTodos = eventsTodoService.list(eventsTodoLambdaQueryWrapper);
         LinkedList<Integer> todoids = new LinkedList<>();
 
-        eventsTodos.forEach(item->{
+        eventsTodos.forEach(item -> {
             todoids.add(item.getNormalTodoId());
         });
 
         eventsTodoService.remove(eventsTodoLambdaQueryWrapper);
         todoService.removeByIds(todoids);
 
-        return isRemove?ResultData.success("删除成功"):ResultData.error("删除失败");
+        return isRemove ? ResultData.success("删除成功") : ResultData.error("删除失败");
     }
-
 
 
 }

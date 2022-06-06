@@ -28,17 +28,17 @@ Vue.use(Notifications)
 Vue.use(VueRouter);
 
 const routes = [
-  { path:  '/', component: login },
-  { path:  '/login', component: login },
-  { path: '/todo', component: todo },
-  { path: "*", component: PageNotFound},
-  { path: '/register', component: register },
-  { path: '/home' , component : home }
+  {path: '/', component: login},
+  {path: '/login', component: login, name: "Login"},
+  {path: '/todo', component: todo, name: "Todo"},
+  {path: "*", component: PageNotFound},
+  {path: '/register', component: register},
+  {path: '/home', component: home, name: "Home"}
 ];
 
 const router = new VueRouter({
   routes,
-  mode:'history'
+  mode: 'history'
 })
 new Vue({
   router,

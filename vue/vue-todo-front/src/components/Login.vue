@@ -111,18 +111,18 @@ export default {
           let user=res.data;
             // this.sendDataToStore(user);
             console.log("登陆成功");
-            this.$router.push("/todo");
+            this.$router.push("/home");
             // this.$router.
         }else{
             this.$notify("账号或者密码错误！！");
             console.log("账号或者密码错误！！");
         }
-        
+
       }).catch((err)=>{
         console.log(err);
       })
 
-      
+
       // firebase
       //   .auth()
       //   .signInWithEmailAndPassword(email, password)
@@ -193,7 +193,7 @@ export default {
       //     that.$notify({
       //       group: "foo",
       //       text: `<div class="alert alert-success" role="alert">
-      //                       <p> Welcome ${user.displayName}</p> 
+      //                       <p> Welcome ${user.displayName}</p>
       //               You are logged in as ${user.email}
       //           </div> `,
 
