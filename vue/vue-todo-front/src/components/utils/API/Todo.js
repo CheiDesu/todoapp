@@ -11,7 +11,7 @@ export function updateTodo(config){
 }
 //delete todo
 export function delTodo(id){
-    return deleter("/todo/delete/"+id);
+    return deleter("/todo/deleteBatch",id);
 }
 
 //get todo by list

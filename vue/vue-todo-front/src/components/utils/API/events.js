@@ -5,8 +5,8 @@ export function getevents() {
     return get("/events/list");
 }
 
-//get event by id
-export function geteventById(ID) {
+//get events'todo by id
+export function geteveTodoById(ID) {
     return get("/events/"+ID);
 }
 
@@ -16,6 +16,11 @@ export function addEvent(config){
 }
 
 //delete events
+export function delEvent(config){
+  return deleter("/events",config);
+}
+
+//delete events'todos
 export function delEveTodo(config){
     return deleter("/events/deleteTodo",config);
 }
@@ -27,5 +32,5 @@ export function updateEve(config){
 
 //add todo
 export function addEveTodo(config){
-    return put("/events",config);
+    return post("/events/addTodo",config);
 }

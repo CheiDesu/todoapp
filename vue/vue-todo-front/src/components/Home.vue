@@ -122,7 +122,7 @@
                       >{{ todo.finished ? 'check_box' : 'check_box_outline_blank' }}</i>
                     </button>
                     <button
-                      @click.stop="removeTodo(todo.id)"
+                      @click.stop="removeTodo({id:[todo.id]})"
                       type="button"
                       aria-label="Delete"
                       title="Delete"
@@ -173,7 +173,8 @@ import { mapActions, mapGetters } from "vuex";
 const uuidv4 = require("uuid/v4");
 import { logout } from "./utils/API/user";
 import { getTodoList,saveTodo,delTodo } from "./utils/API/Todo";
-import {addEvent, getevents} from "./utils/API/events";
+import {addEvent, delEvent, getevents} from "./utils/API/events";
+import qs from "qs";
 
 export default {
   components: {
@@ -236,8 +237,8 @@ export default {
         // console.log(res);
         //赋值前端数据
         this.todos=res.data;
+        this.userData={userId:res.data[0].userId};
         console.log(this.todos);
-        console.log(this.todos[0].id);
       })
     },
     stopTheEvent(event) {
@@ -297,8 +298,8 @@ export default {
         "$(e.target).hasClass('.fa-tag') ",
         $(e.target).hasClass("fa-tag")
       );
-
-      this.$router.push({name:"Todo",params:{id:this.todos[0].id}});
+      //跳转到对应的大todo页面，获取其中的小todo
+      this.$router.push({name:"Todo",params:{id:todoItem.id}});
       // if ($(e.target).hasClass("fa-tag")) {
       //   console.log("clicked ", e.target);
       //   return false;
@@ -324,41 +325,59 @@ export default {
       //     key=[].push(key);
       //     console.log("aaaa");
       // }
-      delTodo(key).then(res=>{
+      delEvent({
+        params: key, paramsSerializer: params => {
+          return qs.stringify(params, {indices: false})
+        }
+      }).then(res=>{
+        //刷新页面
+        this.getAllEvents();
         console.log(res);
       }).catch(err=>{
         console.log(err);
       })
       //自己写，不用vuex
 
-      this.updateTodos();
+      this.updateEvents();
     },
     completeTodo(key) {
       this.markAsComplete(key);
-      this.updateTodos();
+      this.updateEvents();
     },
     addnewTodo(e) {
       if (this.newTodoText.length > 0) {
         e.preventDefault();
-        let newTodo = {
-          finished: false,
-          id: null,
+        let newEvents = {
+          createTime: "",
+          normalTodoList: [
+            {
+              "createTime": "",
+              "deadline": "",
+              "finished": true,
+              "id": 0,
+              "important": 0,
+              "title": "",
+              "updateTime": "",
+              "userId": this.userData.userId
+            }
+          ],
           title: this.newTodoText,
-          deadline: moment().format("YYYY-MM-DD HH:mm:ss"),
-          important: 0,
+          updateTime: "",
+          userId: this.userData.userId,
+          workspaceId: 0
         };
 
-        console.log(newTodo);
+        console.log(newEvents);
 
         //调用后端接口
-        addEvent(newTodo).then(res=>{
+        addEvent(newEvents).then(res=>{
           console.log(res);
           // 刷新Events
           this.getAllEvents();
         })
 
         this.newTodoText = "";
-        this.updateTodos();
+        this.updateEvents();
       }
     },
     checkLogin() {}
