@@ -1,12 +1,12 @@
 <template>
   <div class="main-wrapper">
     <section class="section pb-0 main-section bg-gradient-info">
-      <navbar/>
+      <navbar />
       <main class="container card shadow shadow-lg--hover mt-3" id="todolist">
         <div class="row mb-3">
           <div class="col-6">
-            <h1>{{ title }}</h1>
-            <p>{{ userData.name }}</p>
+            <h1>{{title}}</h1>
+            <p>{{userData.name}}</p>
           </div>
           <div class="col-6 text-right">
             <div class="user-icon">
@@ -25,7 +25,7 @@
                     class="dropdown-item"
                     href="#"
                     @click="toggleFullScreen"
-                  >{{ isFullScreen ? 'Exit Full Screen' : 'Full Screen' }}</a>
+                  >{{ isFullScreen ? 'Exit Full Screen' : 'Full Screen'}}</a>
                 </div>
               </div>
             </div>
@@ -33,15 +33,15 @@
         </div>
         <div class="row">
           <div class="col-4">
-            <span class="badge badge-primary">Total : {{ getTodos.length || 0 }}</span>
+            <span class="badge badge-primary">Total : {{getTodos.length || 0}}</span>
             <!-- <h6 class="count total">Total : {{todos.length}}</h6> -->
           </div>
           <div class="col-4">
-            <span class="badge badge-success">Success : {{ completedTodos.length || 0 }}</span>
+            <span class="badge badge-success">Success : {{completedTodos.length || 0}}</span>
             <!-- <h6 class="count completed">Completed : </h6> -->
           </div>
           <div class="col-4">
-            <span class="badge badge-warning">Pending : {{ pendingTodos.length || 0 }}</span>
+            <span class="badge badge-warning">Pending : {{pendingTodos.length || 0}}</span>
             <!-- <h6 class="count pending">Pending : {{pendingTodos.length}}</h6> -->
           </div>
           <div class="col-md-12 mt-3">
@@ -80,11 +80,11 @@
                     <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
                   </div>
                   <div class="todo-info">
-                    <span class="label todo-title">{{ todo.title }}</span>
+                    <span class="label todo-title">{{todo.title}}</span>
                   </div>
                   <div class="todo-priority">
                     <div class="priority-dot" :style="{background:todo.priorityColor}"></div>
-                    <span>{{ todo.important }} Important</span>
+                    <span>{{todo.important }} Important</span>
                   </div>
                   <div class="todo-tags">
                     <i
@@ -107,7 +107,7 @@
                     </div> -->
                   </div>
 
-                  <span class="todo-date">{{ todo.deadline }}</span>
+                  <span class="todo-date">{{todo.deadline}}</span>
                   <div class="actions">
                     <button
                       type="button"
@@ -122,7 +122,7 @@
                       >{{ todo.finished ? 'check_box' : 'check_box_outline_blank' }}</i>
                     </button>
                     <button
-                      @click.stop="removeTodo(todo.id)"
+                      @click.stop="removeTodo({id:[todo.id]})"
                       type="button"
                       aria-label="Delete"
                       title="Delete"
@@ -154,8 +154,8 @@
         </div>
       </main>
     </section>
-    <notifications group="foo" position="top right" class="my-style" width="400"/>
-    <todoDetailModal/>
+    <notifications group="foo" position="top right" class="my-style" width="400" />
+    <todoDetailModal />
   </div>
 </template>
 
@@ -164,18 +164,17 @@
 import VuePerfectScrollbar from "vue-perfect-scrollbar";
 import draggable from "vuedraggable";
 import moment from "moment";
-import qs from 'qs';
 import firebase from "firebase";
 import navbar from "./Navbar";
 import todoDetailModal from "./TodoDetailModal";
-import {Bus} from "./utils/bus";
+import { Bus } from "./utils/bus";
 import vueStore from "./store/index";
-import {mapActions, mapGetters} from "vuex";
-
+import { mapActions, mapGetters } from "vuex";
 const uuidv4 = require("uuid/v4");
-import {logout} from "./utils/API/user";
-import {getTodoList, saveTodo, delTodo, getTodoByID} from "./utils/API/Todo";
-import {addEveTodo, delEveTodo, geteventById, geteveTodoById} from "./utils/API/events";
+import { logout } from "./utils/API/user";
+import { getTodoList,saveTodo,delTodo } from "./utils/API/Todo";
+import {addEvent, delEvent, getevents} from "./utils/API/events";
+import qs from "qs";
 
 export default {
   components: {
@@ -185,14 +184,14 @@ export default {
     todoDetailModal,
     Bus
   },
-  name: "Todo",
-  data: function () {
+  name: "Home",
+  data: function() {
     return {
-      title: "",
+      title: "Events-LIST",
       todos: [],
       completedTodos: 0,
       pendingTodos: 0,
-      checkkAll: false,
+      checkAll: false,
       newTodoText: "",
       isFullScreen: false,
       elem: document.documentElement,
@@ -202,28 +201,25 @@ export default {
       userInfo: ""
     };
   },
-  mounted() {
-  },
+  mounted() {},
   watch: {
-    isFullScreen: function (newValue, oldValue) {
-    }
+    isFullScreen: function(newValue, oldValue) {}
   },
   created() {
     this.userLoggedIn = true;
-    this.id = this.$route.params.id;
     let that = this;
     //控制全屏开关
-    document.onfullscreenchange = function (event) {
+    document.onfullscreenchange = function(event) {
       if (!that.isFullScreen) {
         that.isFullScreen = true;
       } else {
         that.isFullScreen = false;
       }
     };
-    this.updateTodos();
+    this.updateEvents();
 
-    //从后台请求todos
-    this.getAllTodos();
+    //从后台请求Events
+    this.getAllEvents();
 
     console.log("getTodos ", this.getTodos);
 
@@ -236,14 +232,13 @@ export default {
     toggleFullScreen() {
       !this.isFullScreen ? this.openFullscreen() : this.closeFullscreen();
     },
-    getAllTodos() {
-      console.log(this.$route.params.id);
-      geteveTodoById(this.id).then((res) => {
-        console.log(res);
+    getAllEvents(){
+      getevents().then((res)=>{
+        // console.log(res);
         //赋值前端数据
-        this.todos = res.data.normalTodoList;
-        this.userData={userId: res.data.userId};
-        this.title=res.data.title;
+        this.todos=res.data;
+        this.userData={userId:res.data[0].userId};
+        console.log(this.todos);
       })
     },
     stopTheEvent(event) {
@@ -278,9 +273,9 @@ export default {
       }
     },
     googleLogout() {
-      logout().then((res) => {
+      logout().then((res)=>{
         console.log(res);
-        if (res.code == 1) {
+        if(res.code==1){
           //退出
           //跳转到登录页面
           this.$router.push("/login");
@@ -303,22 +298,23 @@ export default {
         "$(e.target).hasClass('.fa-tag') ",
         $(e.target).hasClass("fa-tag")
       );
-
-      if ($(e.target).hasClass("fa-tag")) {
-        console.log("clicked ", e.target);
-        return false;
-      } else {
-        e.preventDefault();
-        // e.stopPropagation();
-        Bus.$emit("showDetailedTaskModal", todoItem);
-      }
+      //跳转到对应的大todo页面，获取其中的小todo
+      this.$router.push({name:"Todo",params:{id:todoItem.id}});
+      // if ($(e.target).hasClass("fa-tag")) {
+      //   console.log("clicked ", e.target);
+      //   return false;
+      // } else {
+      //   e.preventDefault();
+      //   // e.stopPropagation();
+      //   Bus.$emit("showDetailedTaskModal", todoItem);
+      // }
     },
     clearTodos() {
       this.$store.state.todos = [];
       this.updateTodos();
     },
-    updateTodos() {
-      this.getAllTodos();
+    updateEvents() {
+      this.getAllEvents();
       this.completedTodos = this.getTodos.filter(item => item.finished);
       this.pendingTodos = this.getTodos.filter(item => !item.finished);
     },
@@ -329,61 +325,62 @@ export default {
       //     key=[].push(key);
       //     console.log("aaaa");
       // }
-      delEveTodo(key).then(res => {
-        //重新获取todos
-        this.getAllTodos();
-      }).catch(err => {
+      delEvent({
+        params: key, paramsSerializer: params => {
+          return qs.stringify(params, {indices: false})
+        }
+      }).then(res=>{
+        //刷新页面
+        this.getAllEvents();
+        console.log(res);
+      }).catch(err=>{
         console.log(err);
       })
       //自己写，不用vuex
 
-      this.updateTodos();
+      this.updateEvents();
     },
     completeTodo(key) {
       this.markAsComplete(key);
-      this.updateTodos();
+      this.updateEvents();
     },
     addnewTodo(e) {
       if (this.newTodoText.length > 0) {
         e.preventDefault();
-        let newTodo = {
+        let newEvents = {
           createTime: "",
-          //获取events的id
-          id: this.$route.params.id,
           normalTodoList: [
             {
-              createTime: "",
-              deadline: "",
-              finished: true,
-              id: 0,
-              important: 0,
-              title: this.newTodoText,
-              updateTime: "",
-              userId: this.userData.userId
+              "createTime": "",
+              "deadline": "",
+              "finished": true,
+              "id": 0,
+              "important": 0,
+              "title": "",
+              "updateTime": "",
+              "userId": this.userData.userId
             }
           ],
-          title: "",
+          title: this.newTodoText,
           updateTime: "",
-          //获取当前用户的id
           userId: this.userData.userId,
           workspaceId: 0
         };
 
-        console.log(newTodo);
+        console.log(newEvents);
 
         //调用后端接口
-        addEveTodo(newTodo).then(res => {
+        addEvent(newEvents).then(res=>{
           console.log(res);
-          // 刷新todo
-          this.getAllTodos();
+          // 刷新Events
+          this.getAllEvents();
         })
 
         this.newTodoText = "";
-        this.updateTodos();
+        this.updateEvents();
       }
     },
-    checkLogin() {
-    }
+    checkLogin() {}
   }
 };
 </script>
@@ -391,7 +388,6 @@ export default {
 section.main-section {
   height: 100%;
 }
-
 .card-body {
   text-align: left;
 }
@@ -401,19 +397,15 @@ section.main-section {
     width: calc(100% + 1rem);
   }
 }
-
 .count {
   font-size: 16px;
 }
-
 .count.completed {
   text-align: center;
 }
-
 .count.pending {
   text-align: right;
 }
-
 #todolist {
   margin: 4rem auto;
   padding: 2rem 3rem 3rem;
@@ -423,11 +415,9 @@ section.main-section {
   box-shadow: 0 0 19px 10px rgba(100, 100, 100, 0.2);
   overflow: visible;
 }
-
 #todolist .row {
   text-align: left;
 }
-
 #todolist h1 {
   /*text-align:center;*/
   font-weight: normal;
@@ -435,7 +425,6 @@ section.main-section {
   letter-spacing: 0.05em;
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
-
 #todolist h1 span {
   display: block;
   font-size: 0.8rem;
@@ -451,17 +440,14 @@ section.main-section {
   font-style: italic;
   opacity: 0.8;
 }
-
 #todolist ul {
   margin-top: 1rem;
   list-style: none;
   padding: 0;
 }
-
 #todolist .todolist-move {
   transition: transform 1s;
 }
-
 #todolist li {
   display: flex;
   margin-top: 5px;
@@ -475,17 +461,14 @@ section.main-section {
 #todolist .actions {
   flex-shrink: 0;
 }
-
 #todolist .label {
   position: relative;
   transition: opacity 0.2s linear;
 }
-
 #todolist .label.todo-title {
   /* display: block; */
   color: #7a797e;
 }
-
 #todolist .done .label,
 #todolist .done .todo-priority,
 #todolist .done .todo-tags,
@@ -493,7 +476,6 @@ section.main-section {
 #todolist .done .actions {
   opacity: 0.6;
 }
-
 #todolist .done .label:before {
   content: "";
   position: absolute;
@@ -505,7 +487,6 @@ section.main-section {
   background: #fff;
   animation: strikeitem 0.3s ease-out 0s forwards;
 }
-
 #todolist .btn-picto {
   border: none;
   background: none;
@@ -520,13 +501,11 @@ form {
   display: flex;
   flex-wrap: wrap;
 }
-
 form label {
   min-width: 100%;
   margin-bottom: 0.5rem;
   font-size: 1.3rem;
 }
-
 .add-todo-field {
   border-radius: 0;
   border: none;
@@ -535,14 +514,12 @@ form label {
   color: #32325d;
   padding-right: 50px;
 }
-
 .add-todo-field:focus {
   box-shadow: none;
   background: transparent;
   border: none;
   border-bottom: 1px solid #11cdef;
 }
-
 form input {
   flex-grow: 1;
   border: none;
@@ -550,7 +527,6 @@ form input {
   padding: 0 1.5em;
   font-size: initial;
 }
-
 .get-btn {
   padding: 0 1.3rem;
   border: none;
@@ -563,11 +539,9 @@ form input {
   cursor: pointer;
   transition: background 0.2s ease-out;
 }
-
 .get-btn:hover {
   background: #11cdef;
 }
-
 form input,
 .get-btn {
   font-family: "Quicksand", sans-serif;
@@ -578,23 +552,19 @@ form input,
 .togglebutton-wrapper {
   margin-top: 1em;
 }
-
 .togglebutton-wrapper label {
   display: flex;
   justify-content: flex-end;
   align-items: center;
 }
-
 .togglebutton-wrapper input {
   position: absolute;
   left: -9999px;
 }
-
 .togglebutton-wrapper .togglebutton-label {
   font-size: 0.8rem;
   letter-spacing: 0.1em;
 }
-
 .togglebutton-wrapper .tooglebutton-box {
   position: relative;
   display: block;
@@ -606,7 +576,6 @@ form input,
   border-radius: 999px;
   cursor: pointer;
 }
-
 .togglebutton-wrapper .tooglebutton-box:before {
   content: "";
   position: absolute;
@@ -621,16 +590,13 @@ form input,
   opacity: 0.7;
   transition: all 0.2s ease-in-out;
 }
-
 .togglebutton-wrapper.togglebutton-focus .tooglebutton-box {
   box-shadow: 0px 0px 0px 3px rgba(0, 0, 0, 0.1);
 }
-
 .togglebutton-wrapper.togglebutton-checked .tooglebutton-box:before {
   left: calc(100% - 4px - 16px);
   opacity: 1;
 }
-
 .scroll-area {
   position: relative;
   margin: auto;
@@ -638,60 +604,48 @@ form input,
   max-height: 450px;
   min-height: 350px;
 }
-
 .scroll-area .ps__scrollbar-y-rail {
   background: rgb(232, 232, 232);
   opacity: 1;
   width: 10px;
   border-radius: 8px;
 }
-
 .todo-footer {
   position: absolute;
   bottom: 0;
 }
-
 .todo-footer ul {
   display: flex;
 }
-
 .todo-footer .actions {
   display: flex;
 }
-
 .todo-footer .actions button {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
 .main-wrapper {
   height: 100%;
 }
-
 @media screen and (min-width: 370px) {
   section.main-section {
     padding: 0;
   }
-
   #todolist {
     padding: 1.5rem;
     margin: 1rem auto;
   }
-
   #todolist h1 {
     font-size: 1.5rem;
   }
-
   .count.completed {
     text-align: left;
   }
-
   .count.pending {
     text-align: left;
   }
 }
-
 .fa.submit-icon {
   position: absolute;
   right: 30px;
@@ -699,25 +653,20 @@ form input,
   font-size: 25px;
   cursor: pointer;
 }
-
 .badge {
   font-size: 80%;
 }
-
 .navbar-dark .navbar-brand {
   font-size: 20px;
 }
-
 .todo-info {
   flex: 1 70%;
 }
-
 .todo-date {
   font-size: 12px;
   color: #8898aa;
   flex: 1 10%;
 }
-
 .my-style .vue-notification .notification-title {
   color: red !important;
 }
@@ -726,31 +675,25 @@ form input,
   background-color: #f4f5f7;
   cursor: pointer;
 }
-
 .todo-item .handle-wrapper {
   width: 20px;
   color: #b5b5b5;
   opacity: 0;
 }
-
 #todolist li.todo-item:hover .handle-wrapper {
   opacity: 1;
 }
-
 .handle-wrapper:hover {
   cursor: move;
 }
-
 .ghost {
   border-bottom: 1px solid #11cdef;
 }
-
 .user-icon img {
   width: 40px;
   cursor: pointer;
   border-radius: 50%;
 }
-
 .label.todo-description {
   font-size: 16px;
   background: #dedede;
@@ -762,7 +705,6 @@ form input,
   justify-content: center;
   align-items: center;
 }
-
 .badge.badge-pill.badge-info {
   font-size: 11px;
   margin-right: 5px;
@@ -770,32 +712,27 @@ form input,
   line-height: normal;
   padding: 3px 10px;
 }
-
 @media screen and (max-width: 370px) {
   #todolist {
     max-width: 400px;
     padding: 1rem;
   }
 }
-
 @media screen and (max-width: 768px) {
   #todolist {
     max-width: 650px;
     padding: 1.25rem;
   }
 }
-
 .todo-priority {
   flex: 1 20%;
   display: flex;
   align-items: center;
 }
-
 .todo-tags {
   flex: 1 10%;
   text-align: center;
 }
-
 .todo-tags .fa-tag[data-toggle="dropdown"] {
   color: #7a797e;
   height: 30px;
@@ -807,17 +744,14 @@ form input,
   transition: all 0.2s;
   border-radius: 50%;
 }
-
 .todo-tags .fa-tag[data-toggle="dropdown"]:hover {
   background: rgba(17, 205, 239, 0.5);
   color: #fff;
   transform: scale(1.2);
 }
-
 .todo-desc-icon {
   width: 20px;
 }
-
 .priority-dot {
   height: 10px;
   width: 10px;
@@ -825,7 +759,6 @@ form input,
   border-radius: 50%;
   margin-right: 10px;
 }
-
 .todo-tags .dropdown-menu.show .badge-pill.badge {
   font-size: 12px;
   text-transform: capitalize;
@@ -835,7 +768,6 @@ form input,
   width: 120px;
   margin: 8px auto;
 }
-
 .dropdown-header {
   color: #7a797e;
   text-align: center;
@@ -846,22 +778,18 @@ form input,
   border-bottom: 1px solid #c5c5c5;
   margin: 0 20px;
 }
-
 .no-tags {
   text-align: center;
   font-size: 14px;
   margin: 10px 0;
 }
-
 @media (max-width: 767px) {
   #todolist li {
     flex-wrap: wrap;
   }
-
   .todo-info {
     flex: 1 70%;
   }
-
   .todo-priority {
     flex: 1 25%;
     display: flex;
@@ -870,19 +798,16 @@ form input,
     flex-shrink: 0;
     flex-grow: 0;
   }
-
   .todo-tags {
     flex: 1 10%;
     text-align: center;
     order: 3;
     flex-grow: 0;
   }
-
   .todo-date {
     flex: 1 10%;
     align-items: center;
   }
-
   #todolist .actions {
     flex-shrink: 0;
   }

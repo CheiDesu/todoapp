@@ -100,7 +100,7 @@ public class NormalTodoController {
     *   处理关系表,关系表里的todo也要删除？
     * */
     @DeleteMapping("/deleteBatch")
-    public ResultData deleteBatch(@RequestBody List<Integer> ids){
+    public ResultData deleteBatch(@RequestBody  List<Integer> ids){
 
         boolean b = todoService.removeByIdsWithEvents(ids);
         return b?ResultData.success("删除成功"):ResultData.error("删除失败");
@@ -111,15 +111,15 @@ public class NormalTodoController {
      *  删除todo，跟上面对比请求参数类型不同
      *   处理关系表,关系表里的todo也要删除？
      * */
-    @DeleteMapping("/delete/{id}")
-    public ResultData delete(@PathVariable Integer id){
-
-        LinkedList<Integer> list = new LinkedList<>();
-        list.add(id);
-        boolean b = todoService.removeByIdsWithEvents(list);
-        return b?ResultData.success("删除成功"):ResultData.error("删除失败");
-
-    }
+//    @DeleteMapping("/delete/{id}")
+//    public ResultData delete(@PathVariable Integer id){
+//
+//        LinkedList<Integer> list = new LinkedList<>();
+//        list.add(id);
+//        boolean b = todoService.removeByIdsWithEvents(list);
+//        return b?ResultData.success("删除成功"):ResultData.error("删除失败");
+//
+//    }
 
 }
 

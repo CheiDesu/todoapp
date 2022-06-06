@@ -122,7 +122,7 @@
                       >{{ todo.finished ? 'check_box' : 'check_box_outline_blank' }}</i>
                     </button>
                     <button
-                      @click.stop="removeTodo({id:[todo.id]})"
+                      @click.stop="removeTodo(todo.id)"
                       type="button"
                       aria-label="Delete"
                       title="Delete"
@@ -325,11 +325,7 @@ export default {
       //     key=[].push(key);
       //     console.log("aaaa");
       // }
-      delEvent({
-        params: key, paramsSerializer: params => {
-          return qs.stringify(params, {indices: false})
-        }
-      }).then(res=>{
+      delEvent(key).then(res=>{
         //刷新页面
         this.getAllEvents();
         console.log(res);
