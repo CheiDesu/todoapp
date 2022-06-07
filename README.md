@@ -46,15 +46,39 @@
     
 # 一些说明
 
-0. 待优化：
-    1. 用sql语句代替接口调用，减少冗余代码
-    2. controller多次调用的代码块封装到service
-    3. 用户密码加密认证（md5等）
-    4. 存在bean相互循环依赖的问题。。。
+## 1. 待优化：
+   ### 后端
+   1. 用sql语句代替接口调用，减少冗余代码
+   2. controller多次调用的代码块封装到service
+   3. 用户密码加密认证（md5等）
+   4. 存在bean相互循环依赖的问题。。。
+   ### 前端
+   1. 日历组件存在显示不完全的问题
+   2. 工作区尚未实现
+   3. ~~展示效果不够直接~~(这个可能要重构一下前端了，寄)
 
-1. 接口文档：
-    http://localhost:8080/doc.html#/home
+## 2. 接口文档：
+    http://localhost:8081/doc.html#/home
     
     
-2. 前端代码参考：
+## 3. 前端代码参考：
     https://blog.csdn.net/weixin_44816309/article/details/109677098
+
+
+## 4.使用说明：
+前端服务器根目录：http://localhost:8080
+
+登陆页面:http://localhost:8080/login
+
+登陆之后会跳转到home界面，展示各个大todo，可在该页面进行增删查操作
+
+![](https://picgo-1304285457.cos.ap-guangzhou.myqcloud.com/images/20220606135143.png)
+
+单击其中的大todo，即可进入该大todo的具体页面：/todo 展示了大todo下的各个待办事项
+
+![](https://picgo-1304285457.cos.ap-guangzhou.myqcloud.com/images/20220606135157.png)
+
+各个页面的右上角可以随时进行logout
+
+![](https://picgo-1304285457.cos.ap-guangzhou.myqcloud.com/images/20220606135240.png)
+

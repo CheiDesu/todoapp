@@ -119,7 +119,7 @@
                             <i class="fa fa-exclamation" aria-hidden="true"></i>
                             <i class="fa fa-exclamation" aria-hidden="true"></i>
                             <i class="fa fa-exclamation" aria-hidden="true"></i>
-                          </div>High
+                          </div>重要且紧急
                         </label>
                       </div>
                       <div class="custom-control custom-radio mb-2">
@@ -135,7 +135,7 @@
                           <div class="icon-wrapper">
                             <i class="fa fa-exclamation" aria-hidden="true"></i>
                             <i class="fa fa-exclamation" aria-hidden="true"></i>
-                          </div>Medium
+                          </div>重要不紧急
                         </label>
                       </div>
                       <div class="custom-control custom-radio mb-2">
@@ -150,7 +150,7 @@
                         <label class="custom-control-label low" for="customRadio3">
                           <div class="icon-wrapper">
                             <i class="fa fa-exclamation" aria-hidden="true"></i>
-                          </div>Low
+                          </div>紧急不重要
                         </label>
                       </div>
                       <div class="custom-control custom-radio mb-2">
@@ -167,7 +167,7 @@
                             <i class="fa fa-exclamation" aria-hidden="true"></i>
                             <i class="fa fa-exclamation" aria-hidden="true"></i>
                             <i class="fa fa-exclamation" aria-hidden="true"></i>
-                          </div>None
+                          </div>不紧急不重要
                         </label>
                       </div>
                     </div>
@@ -315,7 +315,7 @@ export default {
       //先查看data绑定那些回显的数据再传入
       console.log(this.taskDetail);
 
-    
+
       if (this.taskDetail.priority) {
         if (this.taskDetail.priority === "High")
           {

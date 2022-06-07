@@ -11,13 +11,13 @@ export default {
     state.todos.unshift(payload)
   },
   MARK_AS_COMPLETE(state, key = payload) {
-    
 
-    if (state.todos[key].completed) {
+
+    /*if (state.todos[key].completed) {
       state.todos[key].completed = false;
     } else {
       state.todos[key].completed = true;
-    }
+    }*/
   },
   DELETE_TODO(state, key = payload) {
     state.todos.splice(key, 1);
