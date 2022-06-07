@@ -73,7 +73,8 @@
                   :class="todo.finished ? 'done': 'undone'"
                   v-for="(todo,key) in todos"
                   :key="key"
-                >
+                  @click="showDetail(todo, $event)">
+                  >
                   <div class="handle-wrapper">
                     <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
                     <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
@@ -81,19 +82,18 @@
                   <div class="todo-info">
                     <span class="label todo-title">{{ todo.title }}</span>
                   </div>
-                  <div class="todo-priority"
-                       @click="showDetail(todo, $event)">
+                  <div class="todo-priority">
                     <div class="priority-dot" :style="{background:priorityColor[todo.important-1]}"></div>
                     <span>{{ important_level[todo.important - 1] }}</span>
                   </div>
                   <div class="todo-tags">
-                    <datetime-picker
-                      timeType="second"
-                      :value="todo.deadline"
-                      @input="val=>{changeDate(val,key)}"
-                      min="2018-08-24 02:10:02"
-                      :timeStr="timeStr"
-                    />
+                    <!--                    <datetime-picker-->
+                    <!--                      timeType="second"-->
+                    <!--                      :value="todo.deadline"-->
+                    <!--                      @input="val=>{changeDate(val,key)}"-->
+                    <!--                      min="2018-08-24 02:10:02"-->
+                    <!--                      :timeStr="timeStr"-->
+                    <!--                    />-->
                     <!-- <div class="dropdown-menu" v-if="todo.tags.length <= 0">
                       <div class="dropdown-header">
                         <i class="fa fa-tag" aria-hidden="true"></i> Tags
@@ -107,7 +107,7 @@
                     </div> -->
                   </div>
 
-                  <!--                  <span class="todo-date">{{ todo.deadline }}</span>-->
+                  <span class="todo-date">{{ todo.deadline }}</span>
                   <span class="todo-date"></span>
                   <div class="actions">
                     <button
@@ -204,7 +204,6 @@ export default {
       userInfo: "",
       important_level: ["不重要不紧急", "紧急不重要", "重要不紧急", "紧急且重要"],
       timeStr: ['hour', 'min', 'sec'],
-      // time: '2019-02-01 01:02:01',
     };
   },
   mounted() {
@@ -237,7 +236,8 @@ export default {
     ...mapGetters(["getTodos", "getUserData"])
   },
   methods: {
-    changeDate: function (val,key) {
+    //从input框中获取更改的deadline，并利用key定位todo，进行todo的update
+    changeDate: function (val, key) {
       this.todos[key].deadline = val;
       console.log(this.todos[key].deadline);
       updateTodo(this.todos[key]);
