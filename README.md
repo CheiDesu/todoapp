@@ -46,21 +46,26 @@
     
 # 一些说明
 
-0. 待优化：
-    1. 用sql语句代替接口调用，减少冗余代码
-    2. controller多次调用的代码块封装到service
-    3. 用户密码加密认证（md5等）
-    4. 存在bean相互循环依赖的问题。。。
+## 1. 待优化：
+   ### 后端
+   1. 用sql语句代替接口调用，减少冗余代码
+   2. controller多次调用的代码块封装到service
+   3. 用户密码加密认证（md5等）
+   4. 存在bean相互循环依赖的问题。。。
+   
+   ### 前端
+   1. 工作区未完成
+   2. 展示效果可以更直接
 
-1. 接口文档：
-    http://localhost:8081/doc.html#/home
+## 2. 接口文档：
+   http://localhost:8081/doc.html#/home
     
     
-2. 前端代码参考：
-    https://blog.csdn.net/weixin_44816309/article/details/109677098
+## 3. 前端代码参考：
+   https://blog.csdn.net/weixin_44816309/article/details/109677098
 
 
-# 使用说明：
+## 使用说明：
 前端服务器根目录：http://localhost:8080
 
 登陆页面:http://localhost:8080/login
