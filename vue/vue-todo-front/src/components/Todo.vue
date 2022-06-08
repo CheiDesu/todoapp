@@ -164,8 +164,6 @@
 <script>
 import VuePerfectScrollbar from "vue-perfect-scrollbar";
 import draggable from "vuedraggable";
-import moment from "moment";
-import qs from 'qs';
 import firebase from "firebase";
 import navbar from "./Navbar";
 import todoDetailModal from "./TodoDetailModal";
@@ -175,8 +173,8 @@ import {mapActions, mapGetters} from "vuex";
 
 const uuidv4 = require("uuid/v4");
 import {logout} from "./utils/API/user";
-import {getTodoList, saveTodo, delTodo, getTodoByID, updateTodo} from "./utils/API/Todo";
-import {addEveTodo, delEveTodo, geteventById, geteveTodoById} from "./utils/API/events";
+import {updateTodo} from "./utils/API/Todo";
+import {addEveTodo, delEveTodo,geteveTodoById} from "./utils/API/events";
 
 
 export default {
@@ -237,13 +235,13 @@ export default {
   },
   methods: {
     //从input框中获取更改的deadline，并利用key定位todo，进行todo的update
-    changeDate: function (val, key) {
-      this.todos[key].deadline = val;
-      console.log(this.todos[key].deadline);
-      updateTodo(this.todos[key]);
-      this.getAllTodos();
-      this.updateTodos();
-    },
+    //该功能已移植到tododetails中
+    // changeDate: function (val, key) {
+    //   this.todos[key].deadline = val;
+    //   console.log(this.todos[key].deadline);
+    //   updateTodo(this.todos[key]);
+    //   this.updateTodos();
+    // },
     ...mapActions(["createNewTodo", "markAsComplete", "deleteTodo"]),
     toggleFullScreen() {
       !this.isFullScreen ? this.openFullscreen() : this.closeFullscreen();
@@ -257,8 +255,8 @@ export default {
         this.title = res.data.title;
         console.log(this.todos);
 
+        //获取todos的完成情况
         if (this.todos.length > 0) {
-          // this.
           let sum = 0;
           this.todos.forEach(item => {
             console.log(sum);
@@ -369,7 +367,6 @@ export default {
       updateTodo(this.todos[key]);
       this.getAllTodos();
       this.updateTodos();
-      //this.updateTodos();
     },
     addnewTodo(e) {
       if (this.newTodoText.length > 0) {
