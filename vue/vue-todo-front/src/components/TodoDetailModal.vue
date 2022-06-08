@@ -84,12 +84,16 @@
                       class="nav-link mb-sm-3 mb-md-0"
                       id="tabs-icons-text-3-tab"
                       data-toggle="tab"
-                      href="#tabs-icons-text-3"
                       role="tab"
                       aria-controls="tabs-icons-text-3"
-                      aria-selected="false"
                     >
-                      <i class="fa fa-tags mr-2" aria-hidden="true"></i>Tags
+                      <datetime-picker
+                        timeType="second"
+                        :value="taskDetail.deadline"
+                        @input="val=>{changeDate(val)}"
+                        min="2018-08-24 02:10:02"
+                        :timeStr="timeStr"
+                      />
                     </a>
                   </li>
                 </ul>
@@ -287,6 +291,7 @@ export default {
       showDescriptionBtn: true,
       taskPriority: null,
       searchText: "",
+      timeStr: ['hour', 'min', 'sec'],
     };
   },
   components: {
@@ -310,6 +315,9 @@ export default {
 
   methods: {
     ...mapActions(["addNewTag", "changeTagColor", "updateTodoTags"]),
+    changeDate: function (val) {
+      this.taskDetail.deadline = val;
+    },
     saveTaskData() {
       //by chei
       //先查看data绑定那些回显的数据再传入

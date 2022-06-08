@@ -16,5 +16,5 @@ public class TodoAppApplication {
         SpringApplication.run(TodoAppApplication.class, args);
         log.info("项目启动成功...");
     }
-    
+
 }
