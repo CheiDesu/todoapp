@@ -17,7 +17,7 @@ instance.interceptors.request.use(
         // 在发送请求之前做些什么
         // let token = getCookie("token");
         // config.headers["Authori-zation"] = "Bearer " + token;
-        console.log("请求拦截器启动！");
+        // console.log("请求拦截器启动！");
         return config;
     },
     function (error) {
@@ -32,7 +32,7 @@ instance.interceptors.response.use(
         // if (response.data.status !== 200) {
         //     Message.error(response.data.msg);
         // }
-        console.log("响应拦截器启动！");
+        // console.log("响应拦截器启动！");
         return response.data;
     },
     function (error) {

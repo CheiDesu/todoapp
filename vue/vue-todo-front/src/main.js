@@ -9,12 +9,13 @@ import PageNotFound from './components/Page404.vue'
 import todo from './components/Todo.vue'
 import register from './components/Register.vue'
 import store from './components/store/index'
-import home from './components/Home.vue'
+import events from './components/Events.vue'
 import moment from 'moment'
+import home from './components/Home.vue'
 import cal from "./components/cal";
 import '../node_modules/@livelybone/vue-datepicker/lib/css/index.css'
 import '../node_modules/@livelybone/vue-datepicker/lib/css/index.scss'
-import { Datepicker, Timepicker, DatetimePicker, DateRangePicker } from '@livelybone/vue-datepicker';
+import {Datepicker, Timepicker, DatetimePicker, DateRangePicker} from '@livelybone/vue-datepicker';
 
 // Global register
 Vue.component('datetime-picker', DatetimePicker);
@@ -36,15 +37,15 @@ Vue.use(VueRouter);
 Vue.prototype.$moment = moment;
 
 
-
 const routes = [
   {path: '/', component: login},
   {path: '/login', component: login, name: "Login"},
   {path: '/todo', component: todo, name: "Todo"},
   {path: "*", component: PageNotFound},
   {path: '/register', component: register},
-  {path: '/home', component: home, name: "Home"},
-  {path:"/cal",component: cal}
+  {path: '/events', component: events, name: "Events"},
+  {path: "/cal", component: cal},
+  {path: "/home", component: home, name: "Home"},
 ];
 
 const router = new VueRouter({
