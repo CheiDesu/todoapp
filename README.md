@@ -31,11 +31,11 @@
     2. 登出 √
     
 2. 待办和用户的crud已完成
-    1. 待办 cru (d:未测试)
-    2. 事件 r  (cud:未测试)
-        1. 事件内待办 r (cud 未测试)
-    2. 用户 crud （已测试）
-    3. 工作组 crud （已测试）
+    1. 待办 
+    2. 事件 
+        1. 事件内待办 
+    2. 用户 
+    3. 工作组
 
 3. 前端
     1. 数据校验
@@ -46,15 +46,44 @@
     
 # 一些说明
 
-0. 待优化：
-    1. 用sql语句代替接口调用，减少冗余代码
-    2. controller多次调用的代码块封装到service
-    3. 用户密码加密认证（md5等）
-    4. 存在bean相互循环依赖的问题。。。
+## 1. 待优化：
+   ### 后端
+   1. 用sql语句代替接口调用，减少冗余代码
+   2. controller多次调用的代码块封装到service
+   3. 用户密码加密认证（md5等）
+   4. 存在bean相互循环依赖的问题。。。
 
-1. 接口文档：
-    http://localhost:8080/doc.html#/home
+
+   
+   ### 前端
+   1. 工作区未完成
+   2. 展示效果可以更直接
+
+## 2. 接口文档：
+   http://localhost:8081/doc.html#/home
     
     
-2. 前端代码参考：
-    https://blog.csdn.net/weixin_44816309/article/details/109677098
+## 3. 前端代码参考：
+   https://blog.csdn.net/weixin_44816309/article/details/109677098
+
+
+## 使用说明：
+前端运行：进入/vue/vue-todo-front/目录输入npm install安装资源包；然后npm run dev运行前端项目；详见vue/vue-todo-front/README.md
+后端运行：在idea导入项目，等待maven加载依赖，运行main()。
+
+前端服务器根目录：http://localhost:8080
+
+登陆页面:http://localhost:8080/login
+
+登陆之后会跳转到home界面，展示各个大todo，可在该页面进行增删查操作
+
+![](https://picgo-1304285457.cos.ap-guangzhou.myqcloud.com/images/20220606135143.png)
+
+单击其中的大todo，即可进入该大todo的具体页面：/todo 展示了大todo下的各个待办事项
+
+![](https://picgo-1304285457.cos.ap-guangzhou.myqcloud.com/images/20220606135157.png)
+
+各个页面的右上角可以随时进行logout
+
+![](https://picgo-1304285457.cos.ap-guangzhou.myqcloud.com/images/20220606135240.png)
+
