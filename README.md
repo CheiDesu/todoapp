@@ -68,6 +68,9 @@
 
 
 ## 使用说明：
+前端运行：进入/vue/vue-todo-front/目录输入npm install安装资源包；然后npm run dev运行前端项目；详见vue/vue-todo-front/README.md
+后端运行：在idea导入项目，等待maven加载依赖，运行main()。
+
 前端服务器根目录：http://localhost:8080
 
 登陆页面:http://localhost:8080/login
